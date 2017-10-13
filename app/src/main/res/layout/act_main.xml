@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <me.gavin.game.tetris.RegionView
+            android:id="@+id/region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            tools:background="#dddddd" />
+
+        <Button
+            android:id="@+id/btnLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/btnRight"
+            android:layout_alignBottom="@+id/btnRight"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="bottom|start"
+            android:text="←" />
+
+        <Button
+            android:id="@+id/btnRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="61dp"
+            android:layout_toEndOf="@+id/btnLeft"
+            android:text="→" />
+
+        <Button
+            android:id="@+id/btnDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnLeft"
+            android:layout_toStartOf="@+id/region"
+            android:text="↓" />
+
+        <Button
+            android:id="@+id/btnRotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/btnRight"
+            android:layout_alignBottom="@+id/btnRight"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginStart="19dp"
+            android:layout_toEndOf="@+id/region"
+            android:text="↑" />
+
+    </RelativeLayout>
+
+</layout>
