@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -10,48 +10,23 @@
             android:id="@+id/region"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             tools:background="#dddddd" />
 
-        <Button
-            android:id="@+id/btnLeft"
+        <me.gavin.game.tetris.test.RockerView
+            android:id="@+id/rocker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/btnRight"
-            android:layout_alignBottom="@+id/btnRight"
-            android:layout_alignParentStart="true"
-            android:layout_gravity="bottom|start"
-            android:text="←" />
-
-        <Button
-            android:id="@+id/btnRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="61dp"
-            android:layout_toEndOf="@+id/btnLeft"
-            android:text="→" />
-
-        <Button
-            android:id="@+id/btnDown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnLeft"
-            android:layout_toStartOf="@+id/region"
-            android:text="↓" />
+            android:layout_gravity="bottom" />
 
         <Button
             android:id="@+id/btnRotate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/btnRight"
-            android:layout_alignBottom="@+id/btnRight"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginStart="19dp"
-            android:layout_toEndOf="@+id/region"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="50dp"
             android:text="↑" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </layout>

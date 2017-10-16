@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RockerView">
+        <attr name="rocker_areaRadius" format="dimension" />
+        <attr name="rocker_rockerRadius" format="dimension" />
+        <attr name="rocker_areaBackground" format="color" />
+        <attr name="rocker_rockerBackground" format="color" />
+        <attr name="rocker_refreshDelay" format="integer" />
+        <attr name="rocker_refreshCycle" format="integer" />
+    </declare-styleable>
+
+</resources>

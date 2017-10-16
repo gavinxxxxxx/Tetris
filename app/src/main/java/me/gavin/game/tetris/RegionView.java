@@ -17,6 +17,7 @@ public class RegionView extends View {
 
     public RegionView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        setKeepScreenOn(true);
     }
 
     public void setViewModel(ViewModel mViewModel) {

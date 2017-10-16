@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import me.gavin.game.tetris.databinding.ActMainBinding;
+import me.gavin.game.tetris.test.RockerView;
 
 public class MainActivity extends Activity {
 
@@ -21,9 +22,26 @@ public class MainActivity extends Activity {
             binding.region.postInvalidate();
         });
 
-        binding.btnLeft.setOnClickListener(v -> binding.region.vm.onLeft());
-        binding.btnRight.setOnClickListener(v -> binding.region.vm.onRight());
-        binding.btnDown.setOnClickListener(v -> binding.region.vm.onDown());
         binding.btnRotate.setOnClickListener(v -> binding.region.vm.onRotate());
+
+        binding.rocker.setDirectionListener(event -> {
+            switch (event) {
+                case RockerView.EVENT_DIRECTION_LEFT:
+                    binding.region.vm.onLeft();
+                    break;
+                case RockerView.EVENT_DIRECTION_RIGHT:
+                    binding.region.vm.onRight();
+                    break;
+                case RockerView.EVENT_DIRECTION_UP:
+                    binding.region.vm.onUp();
+                    break;
+                case RockerView.EVENT_DIRECTION_DOWN:
+                    binding.region.vm.onDown();
+                    break;
+                default:
+                    break;
+            }
+        });
+
     }
 }
