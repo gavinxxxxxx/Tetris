@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <me.gavin.game.tetris.test.RockerView
+        <me.gavin.game.tetris.rocker.RockerView
             android:id="@+id/rocker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

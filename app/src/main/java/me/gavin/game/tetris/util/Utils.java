@@ -1,13 +1,13 @@
-package me.gavin.game.tetris;
+package me.gavin.game.tetris.util;
 
-import me.gavin.game.tetris.model.shape.I;
-import me.gavin.game.tetris.model.shape.J;
-import me.gavin.game.tetris.model.shape.L;
-import me.gavin.game.tetris.model.shape.O;
-import me.gavin.game.tetris.model.shape.S;
-import me.gavin.game.tetris.model.shape.Shape;
-import me.gavin.game.tetris.model.shape.T;
-import me.gavin.game.tetris.model.shape.Z;
+import me.gavin.game.tetris.shape.I;
+import me.gavin.game.tetris.shape.J;
+import me.gavin.game.tetris.shape.L;
+import me.gavin.game.tetris.shape.O;
+import me.gavin.game.tetris.shape.S;
+import me.gavin.game.tetris.shape.Shape;
+import me.gavin.game.tetris.shape.T;
+import me.gavin.game.tetris.shape.Z;
 
 /**
  * Utils

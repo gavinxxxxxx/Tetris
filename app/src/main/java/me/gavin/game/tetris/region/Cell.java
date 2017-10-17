@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.model;
+package me.gavin.game.tetris.region;
 
 /**
  * 方格最小单位

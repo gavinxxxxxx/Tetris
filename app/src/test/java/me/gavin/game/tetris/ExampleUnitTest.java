@@ -29,4 +29,44 @@ public class ExampleUnitTest {
         }
         System.out.print(ds[index] + " " + ds[index + 1]);
     }
+
+    @Test
+    public void bbb() {
+        int[] is = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        System.arraycopy(is, 1, is, 0, 8);
+        for (int i : is) {
+            System.out.println(i);
+        }
+    }
+
+    private void a() {
+        if (flag) {
+            b();
+        }
+    }
+
+    boolean flag;
+
+    private synchronized void b() {
+        flag = true;
+
+        flag = false;
+    }
+
+    @Test
+    public void arrayCopy() {
+        int[][] a = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8},{9, 10, 11},{12, 13, 14}};
+
+        System.out.println(a.length);
+
+        System.arraycopy(a, 1, a, 0, a.length - 1);
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[i].length; j++) {
+                System.out.print(a[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
 }

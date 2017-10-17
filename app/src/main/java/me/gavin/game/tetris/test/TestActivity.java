@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.databinding.TestBinding;
+import me.gavin.game.tetris.util.L;
 
 /**
  * 这里是萌萌哒注释君

@@ -17,7 +17,7 @@
  *
  */
 
-package me.gavin.game.tetris.test;
+package me.gavin.game.tetris.rocker;
 
 import android.graphics.Point;
 import android.graphics.PointF;

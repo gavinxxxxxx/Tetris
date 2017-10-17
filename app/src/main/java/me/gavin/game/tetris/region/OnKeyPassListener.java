@@ -1,4 +1,4 @@
-package me.gavin.game.tetris;
+package me.gavin.game.tetris.region;
 
 /**
  * 按键监听

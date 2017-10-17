@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.test;
+package me.gavin.game.tetris.rocker;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -25,11 +25,11 @@ import me.gavin.game.tetris.R;
  */
 public class RockerView extends View {
 
-    private static int DEFAULT_AREA_RADIUS = 75;
-    private static int DEFAULT_ROCKER_RADIUS = 25;
+    private static int DEFAULT_AREA_RADIUS = 68;
+    private static int DEFAULT_ROCKER_RADIUS = 24;
 
     private static int DEFAULT_AREA_COLOR = 0x11111111;
-    private static int DEFAULT_ROCKER_COLOR = 0x22222222;
+    private static int DEFAULT_ROCKER_COLOR = 0x22FFFFFF;
 
     private static int DEFAULT_REFRESH_DELAY = 250;
     private static int DEFAULT_REFRESH_CYCLE = 50;
@@ -45,24 +45,23 @@ public class RockerView extends View {
     private int mAreaColor;
     private int mRockerColor;
 
-    private RockerDirectionListener mDirectionListener;
+    private OnRockerDirectionListener mDirectionListener;
     public static final int EVENT_DIRECTION_CENTER = 0;
     public static final int EVENT_DIRECTION_LEFT = 1;
     public static final int EVENT_DIRECTION_RIGHT = 2;
     public static final int EVENT_DIRECTION_UP = 3;
     public static final int EVENT_DIRECTION_DOWN = 4;
 
-    private int lastDirectionEvent;
-    private long lastDirectionTime;
+    private int mLastDirectionEvent;
 
-    private RockerActionListener mActionListener;
+    private OnRockerActionListener mActionListener;
     public static final int EVENT_ACTION_DOWN = 0;
     public static final int EVENT_ACTION_UP = 1;
 
     private int mRefreshDelay = DEFAULT_REFRESH_DELAY;
     private int mRefreshCycle = DEFAULT_REFRESH_CYCLE;
 
-    private Disposable mDisposable;
+    private Disposable mTimerDisposable;
 
     public RockerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -161,7 +160,7 @@ public class RockerView extends View {
                 cancelInterval();
                 mRockerPosition.set(mAreaPosition.x, mAreaPosition.y);
                 invalidate();
-                lastDirectionEvent = EVENT_DIRECTION_CENTER;
+                mLastDirectionEvent = EVENT_DIRECTION_CENTER;
                 if (mActionListener != null) {
                     mActionListener.accept(EVENT_ACTION_UP);
                 }
@@ -188,33 +187,33 @@ public class RockerView extends View {
                 directionEvent = EVENT_DIRECTION_RIGHT;
             }
         }
-        if (directionEvent != lastDirectionEvent) {
+        if (directionEvent != mLastDirectionEvent) {
             if (directionEvent == EVENT_DIRECTION_CENTER) {
                 cancelInterval();
                 mDirectionListener.accept(EVENT_DIRECTION_CENTER);
             } else {
                 mDirectionListener.accept(directionEvent);
                 initInterval(directionEvent);
-                lastDirectionEvent = directionEvent;
+                mLastDirectionEvent = directionEvent;
             }
         }
     }
 
     private void initInterval(int directionEvent) {
         Observable.interval(mRefreshDelay, mRefreshCycle, TimeUnit.MILLISECONDS)
-                .doOnSubscribe(disposable -> {
-                    cancelInterval();
-                    mDisposable = disposable;
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> {
+                    cancelInterval();
+                    mTimerDisposable = disposable;
+                })
                 .map(arg0 -> directionEvent)
                 .subscribe(mDirectionListener::accept);
     }
 
     private void cancelInterval() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
+        if (mTimerDisposable != null && !mTimerDisposable.isDisposed()) {
+            mTimerDisposable.dispose();
         }
     }
 
@@ -230,11 +229,11 @@ public class RockerView extends View {
         }
     }
 
-    public void setActionListener(RockerActionListener mActionListener) {
-        this.mActionListener = mActionListener;
+    public void setActionListener(OnRockerActionListener listener) {
+        this.mActionListener = listener;
     }
 
-    public void setDirectionListener(RockerDirectionListener mDirectionListener) {
-        this.mDirectionListener = mDirectionListener;
+    public void setDirectionListener(OnRockerDirectionListener listener) {
+        this.mDirectionListener = listener;
     }
 }
