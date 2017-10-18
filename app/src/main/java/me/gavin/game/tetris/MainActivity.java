@@ -18,11 +18,13 @@ import me.gavin.game.tetris.rocker.RockerView;
 
 public class MainActivity extends Activity {
 
+    private boolean vibrateAble = true;
     private Vibrator vibrator;
     private final long[] pattern = {5, 5, 5, 5};
 
+    private boolean soundAble = true;
     private SoundPool soundPool;
-    private final int[] sounds = {R.raw.music};
+    private final int[] sounds = {R.raw.eliminate, R.raw.drop, R.raw.rotate, R.raw.move, R.raw.start, R.raw.over};
 
     ActMainBinding binding;
 
@@ -43,8 +45,13 @@ public class MainActivity extends Activity {
             soundPool.load(this, sound, 0);
         }
 
-        binding.btnB.setOnClickListener(v -> {
+        binding.btnA.setOnClickListener(v -> {
             binding.region.onRotate();
+            playSound(3);
+            vibrate();
+        });
+        binding.btnB.setOnClickListener(v -> {
+            playSound(2);
             vibrate();
         });
 
@@ -52,20 +59,23 @@ public class MainActivity extends Activity {
             switch (event) {
                 case RockerView.EVENT_DIRECTION_LEFT:
                     binding.region.onLeft();
+                    playSound(4);
                     vibrate();
                     break;
                 case RockerView.EVENT_DIRECTION_RIGHT:
                     binding.region.onRight();
+                    playSound(4);
                     vibrate();
                     break;
                 case RockerView.EVENT_DIRECTION_UP:
                     binding.region.onUp();
-                    vibrate();
                     playSound(1);
+                    vibrate();
                     break;
                 case RockerView.EVENT_DIRECTION_DOWN:
                     binding.region.onDown();
                     vibrate();
+                    playSound(4);
                     break;
                 default:
                     break;
@@ -81,7 +91,8 @@ public class MainActivity extends Activity {
     }
 
     private void vibrate() {
-        Observable.just(0)
+        Observable.just(vibrateAble)
+                .filter(Boolean::booleanValue)
                 .observeOn(Schedulers.io())
                 .subscribe(arg0 -> {
                     if (Build.VERSION.SDK_INT >= 26) {
@@ -93,6 +104,8 @@ public class MainActivity extends Activity {
     }
 
     private void playSound(int index) {
-        soundPool.play(index, 1, 1, 0, 0, 1);
+        Observable.just(soundAble)
+                .filter(Boolean::booleanValue)
+                .subscribe(arg0 -> soundPool.play(index, 1, 1, 0, 0, 1));
     }
 }
