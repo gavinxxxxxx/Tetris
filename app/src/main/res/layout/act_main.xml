@@ -29,6 +29,17 @@
             app:layout_constraintTop_toTopOf="@+id/region"
             tools:background="#44CCCCCC" />
 
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="0"
+            android:textColor="#AABBCC"
+            app:layout_constraintLeft_toRightOf="@+id/region"
+            app:layout_constraintTop_toBottomOf="@+id/next" />
+
         <me.gavin.game.tetris.rocker.RockerView
             android:id="@+id/rocker"
             android:layout_width="wrap_content"
@@ -46,6 +57,7 @@
             android:layout_marginEnd="28dp"
             android:background="@drawable/bg_btn"
             android:text="A"
+            android:textColor="#AABBCC"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -59,6 +71,7 @@
             android:layout_marginEnd="90dp"
             android:background="@drawable/bg_btn"
             android:text="B"
+            android:textColor="#AABBCC"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />

@@ -1,81 +1,79 @@
 package me.gavin.game.tetris;
 
 import android.app.Activity;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import me.gavin.game.tetris.databinding.ActMainBinding;
+import me.gavin.game.tetris.region.RegionViewModel;
+import me.gavin.game.tetris.region.ScoreChangeEvent;
 import me.gavin.game.tetris.rocker.RockerView;
+import me.gavin.game.tetris.service.SoundManager;
+import me.gavin.game.tetris.service.VibrateManager;
+import me.gavin.game.tetris.service.impl.SoundService;
+import me.gavin.game.tetris.service.impl.VibrateService;
+import me.gavin.game.tetris.util.RxBus;
 
 public class MainActivity extends Activity {
 
-    private boolean vibrateAble = true;
-    private Vibrator vibrator;
-    private final long[] pattern = {5, 5, 5, 5};
+    private ActMainBinding mBinding;
 
-    private boolean soundAble = true;
-    private SoundPool soundPool;
-    private final int[] sounds = {R.raw.eliminate, R.raw.drop, R.raw.rotate, R.raw.move, R.raw.start, R.raw.over};
+    private SoundService mSoundService;
+    private VibrateService mVibrateService;
 
-    ActMainBinding binding;
+    private RegionViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.act_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.act_main);
+        initData();
+        bindView();
+        mViewModel.gameStart();
+    }
 
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    private void initData() {
+        mSoundService = new SoundManager(this);
+        mVibrateService = new VibrateManager(this);
+        mViewModel = new RegionViewModel(mBinding.region);
+        RxBus.get().toObservable(ScoreChangeEvent.class)
+                .map(event -> event.score)
+                .map(score -> score * 10)
+                .subscribe(score -> mBinding.tvScore.setText(String.valueOf(score)));
+    }
 
-        soundPool = new SoundPool.Builder()
-                .setAudioAttributes(new AudioAttributes.Builder()
-                        .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-                        .build())
-                .setMaxStreams(1)
-                .build();
-        for (int sound : sounds) {
-            soundPool.load(this, sound, 0);
-        }
-
-        binding.btnA.setOnClickListener(v -> {
-            binding.region.onRotate();
-            playSound(3);
-            vibrate();
+    private void bindView() {
+        mBinding.btnA.setOnClickListener(v -> {
+            mViewModel.onRotate();
+            mSoundService.onRotate();
+            mVibrateService.onRotate();
         });
-        binding.btnB.setOnClickListener(v -> {
-            playSound(2);
-            vibrate();
+        mBinding.btnB.setOnClickListener(v -> {
+            mViewModel.onDrop();
+            mSoundService.onDrop();
+            mVibrateService.onDrop();
         });
-
-        binding.rocker.setDirectionListener(event -> {
+        mBinding.rocker.setDirectionListener(event -> {
             switch (event) {
                 case RockerView.EVENT_DIRECTION_LEFT:
-                    binding.region.onLeft();
-                    playSound(4);
-                    vibrate();
+                    mViewModel.onLeft();
+                    mSoundService.onMove();
+                    mVibrateService.onMove();
                     break;
                 case RockerView.EVENT_DIRECTION_RIGHT:
-                    binding.region.onRight();
-                    playSound(4);
-                    vibrate();
+                    mViewModel.onRight();
+                    mSoundService.onMove();
+                    mVibrateService.onMove();
                     break;
                 case RockerView.EVENT_DIRECTION_UP:
-                    binding.region.onUp();
-                    playSound(1);
-                    vibrate();
+                    mViewModel.onUp();
+                    mSoundService.onRotate();
+                    mVibrateService.onRotate();
                     break;
                 case RockerView.EVENT_DIRECTION_DOWN:
-                    binding.region.onDown();
-                    vibrate();
-                    playSound(4);
+                    mViewModel.onDown();
+                    mSoundService.onMove();
+                    mVibrateService.onMove();
                     break;
                 default:
                     break;
@@ -86,26 +84,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        vibrator.cancel();
-        soundPool.release();
+        mSoundService.dispose();
+        mVibrateService.dispose();
+        mViewModel.dispose();
     }
 
-    private void vibrate() {
-        Observable.just(vibrateAble)
-                .filter(Boolean::booleanValue)
-                .observeOn(Schedulers.io())
-                .subscribe(arg0 -> {
-                    if (Build.VERSION.SDK_INT >= 26) {
-                        vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
-                    } else {
-                        vibrator.vibrate(pattern, -1);
-                    }
-                });
-    }
-
-    private void playSound(int index) {
-        Observable.just(soundAble)
-                .filter(Boolean::booleanValue)
-                .subscribe(arg0 -> soundPool.play(index, 1, 1, 0, 0, 1));
-    }
 }

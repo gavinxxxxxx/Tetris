@@ -15,6 +15,8 @@ public interface OnKeyPassListener {
 
     void onDown();
 
+    void onDrop();
+
     void onRotate();
 
     void onPause();

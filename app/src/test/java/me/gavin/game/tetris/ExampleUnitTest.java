@@ -39,23 +39,14 @@ public class ExampleUnitTest {
         }
     }
 
-    private void a() {
-        if (flag) {
-            b();
-        }
-    }
-
-    boolean flag;
-
-    private synchronized void b() {
-        flag = true;
-
-        flag = false;
+    @Test
+    public void pow() {
+        System.out.println(Math.pow(2, 4));
     }
 
     @Test
     public void arrayCopy() {
-        int[][] a = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8},{9, 10, 11},{12, 13, 14}};
+        int[][] a = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}, {12, 13, 14}};
 
         System.out.println(a.length);
 
