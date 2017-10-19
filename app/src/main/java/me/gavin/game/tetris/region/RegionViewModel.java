@@ -88,24 +88,22 @@ public class RegionViewModel implements OnKeyPassListener, Disposable {
 
     @Override
     public void onDrop() {
-        cancelInterval();
         int diff = 0;
         for (int i = 1; i < vCount; i++) {
             mShapes[0].preMove(false, i);
             for (Point point : mShapes[0].prePoints) {
-                if (point.y >= vCount - 1 || point.y >= 0 && mCells[point.x][point.y].had) {
-                    diff = i;
-                    mShapes[0].preBack();
+                if (point.y >= vCount || point.y >= 0 && mCells[point.x][point.y].had) {
+                    diff = i - 1;
                     break;
                 }
             }
             if (diff > 0) {
-                break;
+                cancelInterval();
+                mShapes[0].move(false, diff);
+                onSole();
+                return;
             }
         }
-        mShapes[0].move(false, diff);
-        mShapes[0].preMove(false, 1);
-        onSole();
     }
 
     @Override
@@ -252,6 +250,7 @@ public class RegionViewModel implements OnKeyPassListener, Disposable {
             mView.postInvalidate();
         } else {
             multiple = 1; // 触底未消除，清空倍数
+            mView.postInvalidate();
         }
         initInterval();
     }

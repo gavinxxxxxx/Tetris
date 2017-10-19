@@ -50,7 +50,7 @@ public class RegionView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (vm != null) {
-            vm.space = h * 0.125f / vm.vCount;
+            vm.space = h * 0.08f / vm.vCount;
         }
     }
 

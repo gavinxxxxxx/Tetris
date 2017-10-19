@@ -40,7 +40,7 @@ public class NextView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int defaultSize = Math.min(DisplayUtil.getScreenWidth() / 4, DisplayUtil.dp2px(48));
-        space = defaultSize * 0.125f / 4;
+        space = defaultSize * 0.08f / 4;
         setMeasuredDimension(defaultSize, defaultSize);
     }
 

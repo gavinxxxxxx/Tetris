@@ -17,7 +17,7 @@ public class SoundManager implements SoundService {
 
     private final SoundPool mSoundPool;
 
-    private boolean soundAble = true;
+    private boolean soundAble = false;
 
     public SoundManager(Context context) {
         mSoundPool = new SoundPool.Builder()
