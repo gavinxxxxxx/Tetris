@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.region;
+package me.gavin.game.tetris.core;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,17 +11,17 @@ import android.view.View;
 import me.gavin.game.tetris.util.DisplayUtil;
 
 /**
- * 区域
+ * TetrisView
  *
- * @author gavin.xiong 2017/10/11
+ * @author gavin.xiong 2017/10/19
  */
-public class RegionView extends View {
+public class TetrisView extends View {
 
-    private RegionViewModel vm;
+    private TetrisControl mControl;
 
     private Paint mPaint, mHadPaint;
 
-    public RegionView(Context context, @Nullable AttributeSet attrs) {
+    public TetrisView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         if (isInEditMode()) {
             return;
@@ -35,8 +35,8 @@ public class RegionView extends View {
         mHadPaint.setColor(0xFF222222);
     }
 
-    public void setViewModel(RegionViewModel viewModel) {
-        this.vm = viewModel;
+    public void setControl(TetrisControl control) {
+        this.mControl = control;
         requestLayout();
         invalidate();
     }
@@ -49,40 +49,40 @@ public class RegionView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (vm != null) {
-            vm.space = h * 0.08f / vm.vCount;
+        if (mControl != null) {
+            mControl.space = h * 0.08f / mControl.vCount;
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (isInEditMode() || vm == null || vm.mShapes[0] == null) {
+        if (isInEditMode() || mControl == null || mControl.mShapes[0] == null) {
             return;
         }
-        drawCell(canvas, getWidth() * 1f / vm.hCount);
-        drawShape(canvas, getWidth() * 1f / vm.hCount);
+        drawCell(canvas, getWidth() * 1f / mControl.hCount);
+        drawShape(canvas, getWidth() * 1f / mControl.hCount);
     }
 
     public void drawCell(Canvas canvas, float cellWidth) {
-        for (int i = 0; i < vm.hCount; i++) {
-            for (int j = 0; j < vm.vCount; j++) {
+        for (int i = 0; i < mControl.hCount; i++) {
+            for (int j = 0; j < mControl.vCount; j++) {
                 canvas.drawRect(
-                        cellWidth * i + vm.space,
-                        cellWidth * j + vm.space,
-                        cellWidth * i + cellWidth - vm.space,
-                        cellWidth * j + cellWidth - vm.space,
-                        vm.mCells[i][j].had ? mHadPaint : mPaint);
+                        cellWidth * i + mControl.space,
+                        cellWidth * j + mControl.space,
+                        cellWidth * i + cellWidth - mControl.space,
+                        cellWidth * j + cellWidth - mControl.space,
+                        mControl.mCells[i][j].had ? mHadPaint : mPaint);
             }
         }
     }
 
     public void drawShape(Canvas canvas, float cellWidth) {
-        for (Point point : vm.mShapes[0].points) {
+        for (Point point : mControl.mShapes[0].points) {
             canvas.drawRect(
-                    cellWidth * point.x + vm.space,
-                    cellWidth * point.y + vm.space,
-                    cellWidth * point.x + cellWidth - vm.space,
-                    cellWidth * point.y + cellWidth - vm.space,
+                    cellWidth * point.x + mControl.space,
+                    cellWidth * point.y + mControl.space,
+                    cellWidth * point.x + cellWidth - mControl.space,
+                    cellWidth * point.y + cellWidth - mControl.space,
                     mHadPaint);
         }
     }

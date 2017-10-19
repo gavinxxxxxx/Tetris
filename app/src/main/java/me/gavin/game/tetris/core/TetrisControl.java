@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.region;
+package me.gavin.game.tetris.core;
 
 import android.graphics.Point;
 import android.util.SparseArray;
@@ -12,16 +12,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.gavin.game.tetris.Config;
-import me.gavin.game.tetris.shape.Shape;
+import me.gavin.game.tetris.next.NextShapeEvent;
+import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.util.RxBus;
-import me.gavin.game.tetris.util.Utils;
+import me.gavin.game.tetris.next.Utils;
 
 /**
- * RegionViewModel
+ * Tetris ViewModel
  *
- * @author gavin.xiong 2017/10/18
+ * @author gavin.xiong 2017/10/19
  */
-public class RegionViewModel implements OnKeyPassListener, Disposable {
+public class TetrisControl implements OnKeyPassListener, Disposable {
 
     final int hCount = Config.HORIZONTAL_COUNT;
     final int vCount = Config.VERTICAL_COUNT;
@@ -30,7 +31,7 @@ public class RegionViewModel implements OnKeyPassListener, Disposable {
     Cell[][] mCells;
     final Shape[] mShapes = new Shape[2];
 
-    private RegionView mView;
+    private TetrisView mView;
 
     private int multiple = 1;
     private long score = 0;
@@ -39,9 +40,9 @@ public class RegionViewModel implements OnKeyPassListener, Disposable {
 
     private boolean isOver;
 
-    public RegionViewModel(RegionView view) {
+    public TetrisControl(TetrisView view) {
         this.mView = view;
-        view.setViewModel(this);
+        view.setControl(this);
         mCells = new Cell[hCount][vCount];
         for (int i = 0; i < hCount; i++) {
             for (int j = 0; j < vCount; j++) {
@@ -121,7 +122,7 @@ public class RegionViewModel implements OnKeyPassListener, Disposable {
 
     @Override
     public void onPause() {
-        // TODO: 2017/10/18  
+        // TODO: 2017/10/18
     }
 
     @Override

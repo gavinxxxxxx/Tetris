@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.region;
+package me.gavin.game.tetris.next;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import me.gavin.game.tetris.shape.Shape;
+import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.util.DisplayUtil;
 import me.gavin.game.tetris.util.RxBus;
 

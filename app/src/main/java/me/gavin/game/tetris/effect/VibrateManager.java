@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.service;
+package me.gavin.game.tetris.effect;
 
 import android.content.Context;
 import android.os.Build;
@@ -8,7 +8,7 @@ import android.os.Vibrator;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import me.gavin.game.tetris.service.impl.VibrateService;
+import me.gavin.game.tetris.effect.impl.VibrateService;
 
 /**
  * 震动

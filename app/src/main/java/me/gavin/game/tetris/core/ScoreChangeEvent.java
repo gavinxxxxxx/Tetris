@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.region;
+package me.gavin.game.tetris.core;
 
 /**
  * 这里是萌萌哒注释君

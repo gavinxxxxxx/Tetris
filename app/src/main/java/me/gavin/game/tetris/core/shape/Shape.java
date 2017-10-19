@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.shape;
+package me.gavin.game.tetris.core.shape;
 
 import android.graphics.Point;
 

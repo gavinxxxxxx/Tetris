@@ -1,6 +1,6 @@
-package me.gavin.game.tetris.region;
+package me.gavin.game.tetris.next;
 
-import me.gavin.game.tetris.shape.Shape;
+import me.gavin.game.tetris.core.shape.Shape;
 
 /**
  * 下一个

@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.service;
+package me.gavin.game.tetris.effect;
 
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -6,7 +6,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 
 import me.gavin.game.tetris.R;
-import me.gavin.game.tetris.service.impl.SoundService;
+import me.gavin.game.tetris.effect.impl.SoundService;
 
 /**
  * 音效

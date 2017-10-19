@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.service.impl;
+package me.gavin.game.tetris.effect.impl;
 
 import io.reactivex.disposables.Disposable;
 
