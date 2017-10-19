@@ -3,6 +3,8 @@ package me.gavin.game.tetris.core;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -30,9 +32,13 @@ public abstract class TetrisControl {
 
     private Disposable mTimerDisposable;
 
+    TetrisCallback mCallback;
+
+    List<Integer> mClearLines = new ArrayList<>();
+
     boolean isOver;
 
-    TetrisCallback mCallback;
+    boolean operateFlag;
 
     TetrisControl(TetrisView view, @NonNull TetrisCallback callback) {
         this.mView = view;
@@ -129,7 +135,7 @@ public abstract class TetrisControl {
 
     public void onDrop() {
         int diff = 0;
-        for (int i = 1; i < vCount; i++) {
+        for (int i = 1; i <= vCount + 1; i++) { // I 旋转后可下落距离大于 vCount
             mShape.preMove(false, i);
             for (Point point : mShape.prePoints) {
                 if (point.y >= vCount || point.y >= 0 && mCells[point.x][point.y].had) {

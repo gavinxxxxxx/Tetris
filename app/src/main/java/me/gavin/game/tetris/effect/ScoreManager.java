@@ -28,8 +28,10 @@ public class ScoreManager implements ScoreService {
 
     @Override
     public void onClear(int clearCount) {
-        multiple *= clearCount;
-        score += multiple;
+        for (int i = 1; i <= clearCount; i++) {
+            multiple *= i;
+            score += multiple;
+        }
     }
 
     @Override

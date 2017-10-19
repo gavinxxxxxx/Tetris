@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
 
 /**
  * Tetris ViewModel
@@ -42,7 +45,7 @@ public class TetrisSoleControl extends TetrisControl {
         }
         Arrays.sort(temp, ((o1, o2) -> o1.y > o2.y ? -1 : 1));
 
-        int clearCount = 0;
+        mClearLines.clear();
         for (Point point : temp) {
             boolean hadFlag = true;
             for (int i = 0; i < hCount; i++) {
@@ -52,32 +55,82 @@ public class TetrisSoleControl extends TetrisControl {
                 }
             }
             if (hadFlag) {
-                clearCount++;
-                // TODO: 2017/10/17 arrayCopy
-                for (int j = point.y; j > 0; j--) {
-                    for (int i = 0; i < hCount; i++) {
-                        mCells[i][j] = mCells[i][j - 1];
-                    }
-                }
-                for (int i = 0; i < hCount; i++) {
-                    mCells[i][0] = new Cell();
-                }
-                for (Point p : temp) {
-                    if (p.y <= point.y) {
-                        p.y++;
-                    }
-                }
-                mCallback.onClear();
+                mClearLines.add(point.y);
             }
         }
 
-        if (clearCount > 0) {
-            mView.postInvalidate();
-            mCallback.onClear(clearCount);
+        if (mClearLines.size() > 0) {
+//            doClear1();
+            doClear2();
+            mCallback.onClear(mClearLines.size());
         } else {
             mView.postInvalidate();
         }
 
-        mCallback.onNextShape(clearCount);
+        mCallback.onNextShape(mClearLines.size());
+    }
+
+    private void doClear1() {
+        for (Integer y : mClearLines) {
+            // TODO: 2017/10/17 arrayCopy
+            for (int j = y; j > 0; j--) {
+                for (int i = 0; i < hCount; i++) {
+                    mCells[i][j] = mCells[i][j - 1];
+                }
+            }
+            for (int i = 0; i < hCount; i++) {
+                mCells[i][0] = new Cell();
+            }
+            for (int i = 0; i < mClearLines.size(); i++) {
+                if (mClearLines.get(i) <= y) {
+                    mClearLines.set(i, mClearLines.get(i) + 1);
+                }
+            }
+            mCallback.onClear();
+        }
+        mView.postInvalidate();
+    }
+
+    private void doClear2() {
+        Observable.just(mClearLines)
+                .flatMap(Observable::fromIterable)
+                .delay(100, TimeUnit.MILLISECONDS)
+                .map(integer -> {
+                    for (int i = 0; i < hCount; i++) {
+                        mCells[i][integer].had = false;
+                    }
+                    mView.postInvalidate();
+                    return integer;
+                })
+                .delay(100, TimeUnit.MILLISECONDS)
+                .map(integer -> {
+                    for (int i = 0; i < hCount; i++) {
+                        mCells[i][integer].had = true;
+                    }
+                    mView.postInvalidate();
+                    return integer;
+                })
+                .delay(100, TimeUnit.MILLISECONDS)
+                .map(integer -> {
+                    for (int i = 0; i < hCount; i++) {
+                        mCells[i][integer].had = false;
+                    }
+                    mView.postInvalidate();
+                    return integer;
+                })
+                .delay(100, TimeUnit.MILLISECONDS)
+                .map(integer -> {
+                    for (int i = 0; i < hCount; i++) {
+                        mCells[i][integer].had = true;
+                    }
+                    mView.postInvalidate();
+                    return integer;
+                })
+                .toList()
+                .map(arg0 -> {
+                    doClear1();
+                    return arg0;
+                })
+                .subscribe();
     }
 }

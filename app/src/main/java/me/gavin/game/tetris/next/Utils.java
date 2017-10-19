@@ -17,6 +17,7 @@ import me.gavin.game.tetris.core.shape.Z;
 public class Utils {
 
     public static Shape nextShape() {
+//        return new I(0);
         int type = (int) (Math.random() * 7);
         switch (type) {
             case 0:
