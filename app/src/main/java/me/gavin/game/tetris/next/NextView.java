@@ -8,10 +8,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.util.DisplayUtil;
-import me.gavin.game.tetris.util.RxBus;
 
 /**
  * 等候区域
@@ -33,8 +31,11 @@ public class NextView extends View {
         mHadPaint = new Paint();
         mPaint.setAntiAlias(true);
         mHadPaint.setColor(0xFF222222);
+    }
 
-        subscribeEvent();
+    public void setShape(Shape shape) {
+        this.mShape = shape;
+        postInvalidate();
     }
 
     @Override
@@ -75,14 +76,5 @@ public class NextView extends View {
                     cellWidth * (point.y + 3) + cellWidth - space,
                     mHadPaint);
         }
-    }
-
-    private void subscribeEvent() {
-        RxBus.get().toObservable(NextShapeEvent.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    this.mShape = event.shape;
-                    postInvalidate();
-                });
     }
 }
