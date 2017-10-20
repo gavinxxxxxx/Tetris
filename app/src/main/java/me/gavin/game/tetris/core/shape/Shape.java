@@ -7,15 +7,52 @@ import android.graphics.Point;
  *
  * @author gavin.xiong 2017/10/11
  */
-public abstract class Shape {
+public class Shape {
+
+    public static final int TYPE_0_I = 0;
+    public static final int TYPE_0_J = 1;
+    public static final int TYPE_0_L = 2;
+    public static final int TYPE_0_O = 3;
+    public static final int TYPE_0_S = 4;
+    public static final int TYPE_0_T = 5;
+    public static final int TYPE_0_Z = 6;
 
     public int pointCount;
     public Point[] points;
     public Point[] prePoints;
 
+    public int type;
     public int morphological; // 形态
 
     public int color;
+
+    public static Shape fromShape(Shape src) {
+        Shape shape = null;
+        if (src.type == TYPE_0_I) {
+            shape = new I(src.morphological);
+        } else if (src.type == TYPE_0_J) {
+            shape = new J(src.morphological);
+        } else if (src.type == TYPE_0_L) {
+            shape = new L(src.morphological);
+        } else if (src.type == TYPE_0_O) {
+            shape = new O();
+        } else if (src.type == TYPE_0_S) {
+            shape = new S(src.morphological);
+        } else if (src.type == TYPE_0_T) {
+            shape = new T(src.morphological);
+        } else if (src.type == TYPE_0_Z) {
+            shape = new Z(src.morphological);
+        }
+        if (shape != null) {
+            shape.pointCount = src.pointCount;
+            shape.points = src.points;
+            shape.prePoints = src.prePoints;
+            shape.type = src.type;
+            shape.morphological = src.morphological;
+            shape.color = src.color;
+        }
+        return shape;
+    }
 
     public Shape(int morphological) {
         this.morphological = morphological;
@@ -41,7 +78,9 @@ public abstract class Shape {
         rotate(points, false);
     }
 
-    public abstract void rotate(Point[] points, boolean isPre);
+    public void rotate(Point[] points, boolean isPre) {
+        // 重写
+    }
 
     public void preMove(boolean isHorizontal, int diff) {
         initPre();

@@ -11,6 +11,7 @@ public class O extends Shape {
 
     public O() {
         super(0);
+        this.type = TYPE_0_O;
         this.pointCount = 4;
         this.points = new Point[pointCount];
         points[0] = new Point(4, -1);

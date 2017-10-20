@@ -1,10 +1,14 @@
-package me.gavin.game.tetris;
+package me.gavin.game.tetris.app;
 
 import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.core.TetrisCallback;
 import me.gavin.game.tetris.core.TetrisControl;
 import me.gavin.game.tetris.core.TetrisSoleControl;
@@ -16,7 +20,6 @@ import me.gavin.game.tetris.effect.VibrateManager;
 import me.gavin.game.tetris.effect.impl.ScoreService;
 import me.gavin.game.tetris.effect.impl.SoundService;
 import me.gavin.game.tetris.effect.impl.VibrateService;
-import me.gavin.game.tetris.next.Utils;
 import me.gavin.game.tetris.rocker.RockerView;
 
 public class MainActivity extends Activity {
@@ -29,14 +32,14 @@ public class MainActivity extends Activity {
 
     private TetrisControl mControl;
 
-    final Shape[] mShapes = new Shape[2];
+    boolean isRestart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.act_main);
-        initData();
         bindView();
+        initData();
         gameStart();
     }
 
@@ -44,13 +47,12 @@ public class MainActivity extends Activity {
         mSoundService = new SoundManager(this);
         mVibrateService = new VibrateManager(this);
         mScoreService = new ScoreManager();
+
+        isRestart = getIntent().getBooleanExtra("isRestart", false);
         mControl = new TetrisSoleControl(mBinding.tetris, new TetrisCallback() {
             @Override
-            public void onNextShape(int clearCount) {
-                System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
-                mShapes[mShapes.length - 1] = Utils.nextShape();
-                mBinding.next.setShape(mShapes[1]);
-                mControl.setShape(mShapes[0]);
+            public void onNextShape(Shape shape, int clearCount) {
+                mBinding.next.setShape(shape);
                 mScoreService.onNextShape(clearCount);
             }
 
@@ -72,16 +74,17 @@ public class MainActivity extends Activity {
                 mSoundService.onOver();
                 mVibrateService.onOver();
                 Toast.makeText(MainActivity.this, "GAME OVER", Toast.LENGTH_LONG).show();
+                Observable.timer(3000, TimeUnit.MILLISECONDS)
+                        .subscribe(arg0 -> {
+                            MainActivity.this.finish();
+                        });
             }
-        });
+        }, isRestart);
     }
 
     private void gameStart() {
-        for (int i = 0; i < mShapes.length; i++) {
-            mShapes[i] = Utils.nextShape();
-        }
-        mBinding.next.setShape(mShapes[1]);
-        mControl.setShape(mShapes[0]);
+        mControl.ready(isRestart);
+        mControl.go();
     }
 
     private void bindView() {
@@ -121,6 +124,18 @@ public class MainActivity extends Activity {
                     break;
             }
         });
+        mBinding.ivPause.setOnClickListener(v -> {
+            v.setSelected(!v.isSelected());
+            if (v.isSelected()) {
+                mControl.onPause();
+            } else {
+                mControl.onContinue();
+            }
+        });
+        mBinding.ivMute.setOnClickListener(v -> {
+            v.setSelected(!v.isSelected());
+            mSoundService.setEnable(!v.isSelected());
+        });
     }
 
     @Override
@@ -131,4 +146,17 @@ public class MainActivity extends Activity {
         mControl.dispose();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mControl.onPause();
+        mBinding.ivPause.setSelected(true);
+        mControl.onSavedInstanceState();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mControl.onRestoreInstanceState();
+    }
 }

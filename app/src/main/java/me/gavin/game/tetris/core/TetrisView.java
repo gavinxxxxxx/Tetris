@@ -56,7 +56,8 @@ public class TetrisView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (isInEditMode() || mControl == null || mControl.mShape == null) {
+        if (isInEditMode() || mControl == null
+                || mControl.mShapes == null || mControl.mShapes[0] == null) {
             return;
         }
         drawCell(canvas, getWidth() * 1f / mControl.hCount);
@@ -77,7 +78,7 @@ public class TetrisView extends View {
     }
 
     public void drawShape(Canvas canvas, float cellWidth) {
-        for (Point point : mControl.mShape.points) {
+        for (Point point : mControl.mShapes[0].points) {
             canvas.drawRect(
                     cellWidth * point.x + mControl.space,
                     cellWidth * point.y + mControl.space,

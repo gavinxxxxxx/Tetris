@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import me.gavin.game.tetris.next.Utils;
 
 /**
  * Tetris ViewModel
@@ -16,27 +17,27 @@ import io.reactivex.Observable;
  */
 public class TetrisSoleControl extends TetrisControl {
 
-    public TetrisSoleControl(TetrisView view, @NonNull TetrisCallback callback) {
-        super(view, callback);
+    public TetrisSoleControl(TetrisView view, @NonNull TetrisCallback callback, boolean isRestart) {
+        super(view, callback, isRestart);
     }
 
     @Override
     void onSole() {
-        for (Point point : mShape.prePoints) {
+        for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
-                isOver = true;
+                isReady = false;
                 mCallback.onOver();
                 return;
             }
         }
 
         // 触底未结束
-        for (Point point : mShape.points) {
+        for (Point point : mShapes[0].points) {
             mCells[point.x][point.y].had = true;
         }
 
         SparseArray<Point> sparseArray = new SparseArray<>();
-        for (Point point : mShape.points) {
+        for (Point point : mShapes[0].points) {
             sparseArray.append(point.y, point);
         }
         Point[] temp = new Point[sparseArray.size()];
@@ -67,7 +68,10 @@ public class TetrisSoleControl extends TetrisControl {
             mView.postInvalidate();
         }
 
-        mCallback.onNextShape(mClearLines.size());
+        System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
+        mShapes[mShapes.length - 1] = Utils.nextShape();
+        mCallback.onNextShape(mShapes[1], mClearLines.size());
+        onContinue();
     }
 
     private void doClear1() {

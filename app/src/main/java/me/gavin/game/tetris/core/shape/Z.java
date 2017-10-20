@@ -11,6 +11,7 @@ public class Z extends Shape {
 
     public Z(int morphological) {
         super(morphological);
+        this.type = TYPE_0_Z;
         this.pointCount = 4;
         this.points = new Point[pointCount];
         if (morphological == 0) {

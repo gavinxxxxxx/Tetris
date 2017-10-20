@@ -9,6 +9,8 @@ import io.reactivex.disposables.Disposable;
  */
 public interface VibrateService extends Disposable {
 
+    void setEnable(boolean enable);
+
     void onStart();
 
     void onMove();

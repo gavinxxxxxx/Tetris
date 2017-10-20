@@ -22,11 +22,19 @@ public class VibrateManager implements VibrateService {
 
     private CompositeDisposable mCompositeDisposable;
 
-    private boolean vibrateAble = false;
+    private boolean enable = false;
 
     public VibrateManager(Context context) {
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mCompositeDisposable = new CompositeDisposable();
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+        if (!enable) {
+            mVibrator.cancel();
+        }
     }
 
     @Override
@@ -60,7 +68,7 @@ public class VibrateManager implements VibrateService {
     }
 
     private void vibrate() {
-        Observable.just(vibrateAble)
+        Observable.just(enable)
                 .filter(Boolean::booleanValue)
                 .observeOn(Schedulers.io())
                 .doOnSubscribe(mCompositeDisposable::add)

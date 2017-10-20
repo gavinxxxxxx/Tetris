@@ -11,6 +11,7 @@ public class L extends Shape {
 
     public L(int morphological) {
         super(morphological);
+        this.type = TYPE_0_L;
         this.pointCount = 4;
         this.points = new Point[pointCount];
         if (morphological == 0) {

@@ -15,9 +15,18 @@ import me.gavin.game.tetris.effect.impl.SoundService;
  */
 public class SoundManager implements SoundService {
 
+    private final int[] sounds = {
+            R.raw.effect_clear,
+            R.raw.effect_drop,
+            R.raw.effect_rotate,
+            R.raw.effect_move,
+            R.raw.start,
+            R.raw.over
+    };
+
     private final SoundPool mSoundPool;
 
-    private boolean soundAble = true;
+    private boolean enable = true;
 
     public SoundManager(Context context) {
         mSoundPool = new SoundPool.Builder()
@@ -26,9 +35,18 @@ public class SoundManager implements SoundService {
                         .build())
                 .setMaxStreams(1)
                 .build();
-        final int[] sounds = {R.raw.effect_clear, R.raw.effect_drop, R.raw.effect_rotate, R.raw.effect_move, R.raw.start, R.raw.over};
         for (int sound : sounds) {
             mSoundPool.load(context, sound, 0);
+        }
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+        if (!enable && mSoundPool != null) {
+            for (int i = 0; i < sounds.length; i++) {
+                mSoundPool.stop(i);
+            }
         }
     }
 
@@ -63,7 +81,7 @@ public class SoundManager implements SoundService {
     }
 
     private void playSound(int index, int priority) {
-        if (soundAble && mSoundPool != null) {
+        if (enable && mSoundPool != null) {
             mSoundPool.play(index, 1, 1, priority, 0, 1);
         }
     }

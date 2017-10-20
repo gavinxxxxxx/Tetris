@@ -1,5 +1,7 @@
 package me.gavin.game.tetris.core;
 
+import me.gavin.game.tetris.core.shape.Shape;
+
 /**
  * TetrisCallback
  *
@@ -7,7 +9,7 @@ package me.gavin.game.tetris.core;
  */
 public interface TetrisCallback {
 
-    void onNextShape(int clearCount);
+    void onNextShape(Shape shape, int clearCount);
 
     void onClear();
 

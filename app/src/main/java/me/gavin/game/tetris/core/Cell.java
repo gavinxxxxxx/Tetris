@@ -5,8 +5,6 @@ package me.gavin.game.tetris.core;
  *
  * @author gavin.xiong 2017/10/12
  */
-public class Cell {
-
-    public boolean had;
-
+class Cell {
+    boolean had;
 }
