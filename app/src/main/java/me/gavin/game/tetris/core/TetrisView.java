@@ -17,7 +17,7 @@ import me.gavin.game.tetris.util.DisplayUtil;
  */
 public class TetrisView extends View {
 
-    private TetrisControl mControl;
+    private Control mControl;
 
     private Paint mPaint, mHadPaint;
 
@@ -35,7 +35,7 @@ public class TetrisView extends View {
         mHadPaint.setColor(0xFF222222);
     }
 
-    public void setControl(TetrisControl control) {
+    public void setControl(Control control) {
         this.mControl = control;
         requestLayout();
         invalidate();

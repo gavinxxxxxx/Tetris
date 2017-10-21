@@ -1,7 +1,6 @@
 package me.gavin.game.tetris.core;
 
 import android.graphics.Point;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +23,11 @@ import me.gavin.game.tetris.util.JsonUtil;
 import me.gavin.game.tetris.util.SPUtil;
 
 /**
- * TetrisBaseControl
+ * Control
  *
- * @author gavin.xiong 2017/10/19
+ * @author gavin.xiong 2017/10/21
  */
-public abstract class TetrisControl {
+public abstract class Control implements ControlImpl {
 
     final int hCount = Config.HORIZONTAL_COUNT;
     final int vCount = Config.VERTICAL_COUNT;
@@ -51,7 +50,7 @@ public abstract class TetrisControl {
 
     boolean isReady;
 
-    TetrisControl(TetrisView view, @NonNull TetrisCallback callback, boolean isRestart) {
+    public Control(TetrisView view, TetrisCallback callback, boolean isContinue) {
         this.mView = view;
         this.mCallback = callback;
         view.setControl(this);
@@ -60,56 +59,17 @@ public abstract class TetrisControl {
         mVibrateService = new VibrateManager(view.getContext());
         mScoreService = new ScoreManager(view.getContext());
 
-        if (!isRestart) {
+        initState(isContinue);
+
+        if (isContinue) {
             mScoreService.onRestoreInstanceState();
             mCallback.onScoreChange(mScoreService.getLineCount(), mScoreService.getScore(), mScoreService.getMultiple());
         }
     }
 
-    /**
-     * 触底
-     */
-    abstract void onSole();
+    abstract void onLand();
 
-    private void initInterval() {
-        Observable.interval(Config.SPEED, Config.SPEED, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    cancelInterval();
-                    mTimerDisposable = disposable;
-                })
-                .subscribe(arg0 -> tryMoveDown());
-    }
-
-    private void cancelInterval() {
-        if (mTimerDisposable != null && !mTimerDisposable.isDisposed()) {
-            mTimerDisposable.dispose();
-        }
-    }
-
-    // TODO: 2017/10/17 忽略过滤掉密集操作
-    private void tryMoveDown() {
-        if (!isReady) return;
-
-        mShapes[0].preMove(false, 1);
-
-        int state = 0; // 正常状态
-        for (Point point : mShapes[0].prePoints) {
-            if (point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
-                cancelInterval();
-                state = 1; // 触底
-                break;
-            }
-        }
-        if (state == 0) {
-            mShapes[0].move(false, 1);
-            mView.postInvalidate();
-        } else {
-            onSole();
-        }
-    }
-
+    @Override
     public void onLeft() {
         if (isReady) {
             mSoundService.onMove();
@@ -126,6 +86,7 @@ public abstract class TetrisControl {
         }
     }
 
+    @Override
     public void onRight() {
         if (isReady) {
             mSoundService.onMove();
@@ -142,6 +103,7 @@ public abstract class TetrisControl {
         }
     }
 
+    @Override
     public void onUp() {
 //        if (isReady) {
 //            mSoundService.onRotate();
@@ -150,6 +112,7 @@ public abstract class TetrisControl {
 //        }
     }
 
+    @Override
     public void onDown() {
         if (isReady) {
             mSoundService.onMove();
@@ -158,6 +121,7 @@ public abstract class TetrisControl {
         }
     }
 
+    @Override
     public void onDrop() {
         if (isReady) {
             mSoundService.onDrop();
@@ -174,13 +138,14 @@ public abstract class TetrisControl {
                 if (diff > 0) {
                     cancelInterval();
                     mShapes[0].move(false, diff);
-                    onSole();
+                    onLand();
                     return;
                 }
             }
         }
     }
 
+    @Override
     public void onRotate() {
         if (isReady) {
             mSoundService.onRotate();
@@ -197,20 +162,42 @@ public abstract class TetrisControl {
         }
     }
 
+    @Override
     public void onPause() {
         isReady = false;
         cancelInterval();
     }
 
-    public void onStartTimer() {
+    @Override
+    public void onStart() {
         isReady = true;
-        initInterval();
+        Observable.interval(Config.SPEED, Config.SPEED, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> {
+                    cancelInterval();
+                    mTimerDisposable = disposable;
+                })
+                .subscribe(arg0 -> tryMoveDown());
     }
 
+    private void cancelInterval() {
+        if (mTimerDisposable != null && !mTimerDisposable.isDisposed()) {
+            mTimerDisposable.dispose();
+        }
+    }
+
+    @Override
+    public void onOver() {
+        // TODO: 2017/10/21
+    }
+
+    @Override
     public void onMute(boolean state) {
         mSoundService.setEnable(!state);
     }
 
+    @Override
     public void onSavedInstanceState() {
         mScoreService.onSavedInstanceState();
         TetrisInstanceState state = new TetrisInstanceState();
@@ -219,6 +206,7 @@ public abstract class TetrisControl {
         SPUtil.saveString(mView.getContext(), "instanceState", JsonUtil.toJson(state));
     }
 
+    @Override
     public void dispose() {
         mSoundService.dispose();
         mVibrateService.dispose();
@@ -226,10 +214,15 @@ public abstract class TetrisControl {
         // TODO: 2017/10/18
     }
 
-    public void ready(boolean isRestart) {
+    private void initState(boolean isContinue) {
         TetrisInstanceState state = JsonUtil.toObj(
                 SPUtil.getString(mView.getContext(), "instanceState"), TetrisInstanceState.class);
-        if (isRestart || state == null) {
+        if (isContinue && state != null) {
+            mScoreService.onRestoreInstanceState();
+            mCells = state.getCells();
+            mShapes = state.getShapes();
+            // mCallback.onNextShape(mShapes[1], 0);
+        } else {
             SPUtil.saveString(mView.getContext(), "instanceState", null);
             mCells = new Cell[hCount][vCount];
             for (int i = 0; i < hCount; i++) {
@@ -241,13 +234,27 @@ public abstract class TetrisControl {
             for (int i = 0; i < mShapes.length; i++) {
                 mShapes[i] = Utils.nextShape();
             }
-        } else {
-            mScoreService.onRestoreInstanceState();
-            mCells = state.getCells();
-            mShapes = state.getShapes();
-            // mCallback.onNextShape(mShapes[1], 0);
         }
         mView.postInvalidate();
     }
 
+    // TODO: 2017/10/17 忽略过滤掉密集操作
+    private void tryMoveDown() {
+        if (!isReady) return;
+        mShapes[0].preMove(false, 1);
+        int state = 0; // 正常状态
+        for (Point point : mShapes[0].prePoints) {
+            if (point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
+                cancelInterval();
+                state = 1; // 触底
+                break;
+            }
+        }
+        if (state == 0) {
+            mShapes[0].move(false, 1);
+            mView.postInvalidate();
+        } else {
+            onLand();
+        }
+    }
 }

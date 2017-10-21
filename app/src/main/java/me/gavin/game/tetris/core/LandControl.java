@@ -1,7 +1,6 @@
 package me.gavin.game.tetris.core;
 
 import android.graphics.Point;
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.Arrays;
@@ -11,18 +10,18 @@ import io.reactivex.Observable;
 import me.gavin.game.tetris.next.Utils;
 
 /**
- * Tetris ViewModel
+ * LandControlImpl
  *
- * @author gavin.xiong 2017/10/19
+ * @author gavin.xiong 2017/10/21
  */
-public class TetrisSoleControl extends TetrisControl {
+public final class LandControl extends Control {
 
-    public TetrisSoleControl(TetrisView view, @NonNull TetrisCallback callback, boolean isRestart) {
-        super(view, callback, isRestart);
+    public LandControl(TetrisView view, TetrisCallback callback, boolean isContinue) {
+        super(view, callback, isContinue);
     }
 
     @Override
-    void onSole() {
+    void onLand() {
         isReady = false;
         for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
@@ -70,15 +69,6 @@ public class TetrisSoleControl extends TetrisControl {
         } else {
             toNext();
         }
-    }
-
-    private void toNext() {
-        mView.postInvalidate();
-        System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
-        mShapes[mShapes.length - 1] = Utils.nextShape();
-        mScoreService.onNextShape(mClearLines.size());
-        mCallback.onNextShape(mShapes[1], mClearLines.size());
-        onStartTimer();
     }
 
     private void doClear() {
@@ -141,5 +131,14 @@ public class TetrisSoleControl extends TetrisControl {
                 })
                 .toList()
                 .subscribe(arg0 -> toNext());
+    }
+
+    private void toNext() {
+        mView.postInvalidate();
+        System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
+        mShapes[mShapes.length - 1] = Utils.nextShape();
+        mScoreService.onNextShape(mClearLines.size());
+        mCallback.onNextShape(mShapes[1], mClearLines.size());
+        onStart();
     }
 }

@@ -30,14 +30,14 @@ public class StartActivity extends Activity {
         mBinding.btnContinue.setOnClickListener(v -> {
             v.setOnClickListener(null);
             startActivity(new Intent(this, MainActivity.class)
-                    .putExtra("isRestart", false));
+                    .putExtra("isContinue", true));
             finish();
         });
 
         mBinding.btnStart.setOnClickListener(v -> {
             v.setOnClickListener(null);
             startActivity(new Intent(this, MainActivity.class)
-                    .putExtra("isRestart", true));
+                    .putExtra("isContinue", false));
             finish();
         });
     }

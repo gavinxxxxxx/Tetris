@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import me.gavin.game.tetris.R;
+import me.gavin.game.tetris.core.ControlImpl;
+import me.gavin.game.tetris.core.LandControl;
 import me.gavin.game.tetris.core.TetrisCallback;
-import me.gavin.game.tetris.core.TetrisControl;
-import me.gavin.game.tetris.core.TetrisSoleControl;
 import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.databinding.ActMainBinding;
 import me.gavin.game.tetris.rocker.RockerView;
@@ -19,9 +19,7 @@ import me.gavin.game.tetris.rocker.RockerView;
 public class MainActivity extends Activity implements TetrisCallback {
 
     private ActMainBinding mBinding;
-
-    private boolean isRestart;
-    private TetrisControl mControl;
+    private ControlImpl mControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +30,8 @@ public class MainActivity extends Activity implements TetrisCallback {
     }
 
     private void init() {
-        isRestart = getIntent().getBooleanExtra("isRestart", false);
-        mControl = new TetrisSoleControl(mBinding.tetris, this, isRestart);
+        boolean isContinue = getIntent().getBooleanExtra("isContinue", false);
+        mControl = new LandControl(mBinding.tetris, this, isContinue);
 
         mBinding.btnA.setOnClickListener(v -> mControl.onRotate());
         mBinding.btnB.setOnClickListener(v -> mControl.onDrop());
@@ -60,7 +58,7 @@ public class MainActivity extends Activity implements TetrisCallback {
             if (v.isSelected()) {
                 mControl.onPause();
             } else {
-                mControl.onStartTimer();
+                mControl.onStart();
             }
         });
         mBinding.ivMute.setOnClickListener(v -> {
@@ -70,8 +68,7 @@ public class MainActivity extends Activity implements TetrisCallback {
     }
 
     private void gameStart() {
-        mControl.ready(isRestart);
-        mControl.onStartTimer();
+        mControl.onStart();
     }
 
     @Override
