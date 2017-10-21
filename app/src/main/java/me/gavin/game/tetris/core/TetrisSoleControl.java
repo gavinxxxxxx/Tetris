@@ -23,6 +23,7 @@ public class TetrisSoleControl extends TetrisControl {
 
     @Override
     void onSole() {
+        isReady = false;
         for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
                 isReady = false;
@@ -61,41 +62,22 @@ public class TetrisSoleControl extends TetrisControl {
         }
 
         if (mClearLines.size() > 0) {
-//            doClear1();
-            doClear2();
+            doClear();
             mCallback.onClear(mClearLines.size());
         } else {
-            mView.postInvalidate();
+            toNext();
         }
+    }
 
+    private void toNext() {
+        mView.postInvalidate();
         System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
         mShapes[mShapes.length - 1] = Utils.nextShape();
         mCallback.onNextShape(mShapes[1], mClearLines.size());
         onContinue();
     }
 
-    private void doClear1() {
-        for (Integer y : mClearLines) {
-            // TODO: 2017/10/17 arrayCopy
-            for (int j = y; j > 0; j--) {
-                for (int i = 0; i < hCount; i++) {
-                    mCells[i][j] = mCells[i][j - 1];
-                }
-            }
-            for (int i = 0; i < hCount; i++) {
-                mCells[i][0] = new Cell();
-            }
-            for (int i = 0; i < mClearLines.size(); i++) {
-                if (mClearLines.get(i) <= y) {
-                    mClearLines.set(i, mClearLines.get(i) + 1);
-                }
-            }
-            mCallback.onClear();
-        }
-        mView.postInvalidate();
-    }
-
-    private void doClear2() {
+    private void doClear() {
         Observable.just(mClearLines)
                 .flatMap(Observable::fromIterable)
                 .delay(100, TimeUnit.MILLISECONDS)
@@ -131,10 +113,27 @@ public class TetrisSoleControl extends TetrisControl {
                     return integer;
                 })
                 .toList()
-                .map(arg0 -> {
-                    doClear1();
-                    return arg0;
+                .map(arg0 -> mClearLines)
+                .flatMapObservable(Observable::fromIterable)
+                .map(y -> {
+                    // TODO: 2017/10/17 arrayCopy
+                    for (int j = y; j > 0; j--) {
+                        for (int i = 0; i < hCount; i++) {
+                            mCells[i][j] = mCells[i][j - 1];
+                        }
+                    }
+                    for (int i = 0; i < hCount; i++) {
+                        mCells[i][0] = new Cell();
+                    }
+                    for (int i = 0; i < mClearLines.size(); i++) {
+                        if (mClearLines.get(i) <= y) {
+                            mClearLines.set(i, mClearLines.get(i) + 1);
+                        }
+                    }
+                    mCallback.onClear();
+                    return 0;
                 })
-                .subscribe();
+                .toList()
+                .subscribe(arg0 -> toNext());
     }
 }

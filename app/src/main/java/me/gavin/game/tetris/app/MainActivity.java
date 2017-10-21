@@ -44,11 +44,16 @@ public class MainActivity extends Activity {
     }
 
     private void initData() {
+        isRestart = getIntent().getBooleanExtra("isRestart", false);
+
         mSoundService = new SoundManager(this);
         mVibrateService = new VibrateManager(this);
-        mScoreService = new ScoreManager();
+        mScoreService = new ScoreManager(this);
+        if (!isRestart) {
+            mScoreService.onRestoreInstanceState();
+            mBinding.tvScore.setText(String.valueOf(mScoreService.getScore() * 100));
+        }
 
-        isRestart = getIntent().getBooleanExtra("isRestart", false);
         mControl = new TetrisSoleControl(mBinding.tetris, new TetrisCallback() {
             @Override
             public void onNextShape(Shape shape, int clearCount) {
@@ -152,11 +157,13 @@ public class MainActivity extends Activity {
         mControl.onPause();
         mBinding.ivPause.setSelected(true);
         mControl.onSavedInstanceState();
+        mScoreService.onSavedInstanceState();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         mControl.onRestoreInstanceState();
+        mScoreService.onRestoreInstanceState();
     }
 }

@@ -1,6 +1,9 @@
 package me.gavin.game.tetris.effect;
 
+import android.content.Context;
+
 import me.gavin.game.tetris.effect.impl.ScoreService;
+import me.gavin.game.tetris.util.SPUtil;
 
 /**
  * ScoreManager
@@ -9,14 +12,17 @@ import me.gavin.game.tetris.effect.impl.ScoreService;
  */
 public class ScoreManager implements ScoreService {
 
+    private Context mContext;
+
     private long score = 0;
     private int multiple = 1;
 
-    public ScoreManager() {
-        this(0, 1);
+    public ScoreManager(Context context) {
+        this(context, 0, 1);
     }
 
-    public ScoreManager(long score, int multiple) {
+    public ScoreManager(Context context, long score, int multiple) {
+        this.mContext = context;
         this.score = score;
         this.multiple = multiple;
     }
@@ -46,5 +52,18 @@ public class ScoreManager implements ScoreService {
     @Override
     public long getScore() {
         return score;
+    }
+
+    @Override
+    public void onSavedInstanceState() {
+        SPUtil.saveLong(mContext, "score", score);
+        SPUtil.saveInt(mContext, "multiple", multiple);
+    }
+
+    @Override
+    public void onRestoreInstanceState() {
+        score = SPUtil.getLong(mContext, "score");
+        int m = SPUtil.getInt(mContext, "multiple");
+        multiple = m > 0 ? m : 1;
     }
 }

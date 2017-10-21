@@ -7,7 +7,7 @@ def static autoVersionCode() {
 }
 
 def static autoVersionName() {
-    return new Date().format("yy.MM.dd", TimeZone.getTimeZone("UTC"))
+    return new Date().format("0.yy.MM.dd", TimeZone.getTimeZone("UTC"))
 }
 
 android {
@@ -57,7 +57,7 @@ android {
             minifyEnabled true
             shrinkResources true
             zipAlignEnabled true
-            versionNameSuffix "_release"
+            versionNameSuffix "_bata"
             buildConfigField "boolean", "LOG_DEBUG", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release

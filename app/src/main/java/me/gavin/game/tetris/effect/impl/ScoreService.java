@@ -15,4 +15,8 @@ public interface ScoreService {
 
     long getScore();
 
+    void onSavedInstanceState();
+
+    void onRestoreInstanceState();
+
 }
