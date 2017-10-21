@@ -22,13 +22,10 @@ public final class LandControl extends Control {
 
     @Override
     void onLand() {
-        isReady = false;
+        isRunning = true;
         for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
-                isReady = false;
-                mSoundService.onOver();
-                mVibrateService.onOver();
-                mCallback.onOver();
+                onOver();
                 return;
             }
         }
@@ -139,6 +136,7 @@ public final class LandControl extends Control {
         mShapes[mShapes.length - 1] = Utils.nextShape();
         mScoreService.onNextShape(mClearLines.size());
         mCallback.onNextShape(mShapes[1], mClearLines.size());
+        isRunning = false;
         onStart();
     }
 }

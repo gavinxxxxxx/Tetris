@@ -27,7 +27,7 @@ import me.gavin.game.tetris.util.SPUtil;
  *
  * @author gavin.xiong 2017/10/21
  */
-public abstract class Control implements ControlImpl {
+abstract class Control implements ControlImpl {
 
     final int hCount = Config.HORIZONTAL_COUNT;
     final int vCount = Config.VERTICAL_COUNT;
@@ -48,9 +48,10 @@ public abstract class Control implements ControlImpl {
 
     List<Integer> mClearLines = new ArrayList<>();
 
-    boolean isReady;
+    private boolean isReady;
+    boolean isRunning;
 
-    public Control(TetrisView view, TetrisCallback callback, boolean isContinue) {
+    Control(TetrisView view, TetrisCallback callback, boolean isContinue) {
         this.mView = view;
         this.mCallback = callback;
         view.setControl(this);
@@ -71,59 +72,64 @@ public abstract class Control implements ControlImpl {
 
     @Override
     public void onLeft() {
-        if (isReady) {
+        if (isReady && !isRunning) {
+            isRunning = true;
             mSoundService.onMove();
             mVibrateService.onMove();
             mShapes[0].preMove(true, -1);
             for (Point point : mShapes[0].prePoints) {
                 if (point.x < 0 || point.y >= 0 && mCells[point.x][point.y].had) {
                     mShapes[0].preBack();
+                    isRunning = false;
                     return;
                 }
             }
             mShapes[0].move(true, -1);
             mView.postInvalidate();
+            isRunning = false;
         }
     }
 
     @Override
     public void onRight() {
-        if (isReady) {
+        if (isReady && !isRunning) {
+            isRunning = true;
             mSoundService.onMove();
             mVibrateService.onMove();
             mShapes[0].preMove(true, 1);
             for (Point point : mShapes[0].prePoints) {
                 if (point.x >= hCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
                     mShapes[0].preBack();
+                    isRunning = false;
                     return;
                 }
             }
             mShapes[0].move(true, 1);
             mView.postInvalidate();
+            isRunning = false;
         }
     }
 
     @Override
     public void onUp() {
-//        if (isReady) {
-//            mSoundService.onRotate();
-//            mVibrateService.onRotate();
-//            onRotate();
-//        }
+        // onRotate();
     }
 
     @Override
     public void onDown() {
-        if (isReady) {
+        if (isReady && !isRunning) {
+            isRunning = true;
             mSoundService.onMove();
             mVibrateService.onMove();
             tryMoveDown();
+            // isRunning = false;
         }
     }
 
     @Override
     public void onDrop() {
-        if (isReady) {
+        if (isReady && !isRunning) {
+            isRunning = true;
             mSoundService.onDrop();
             mVibrateService.onDrop();
             int diff = 0;
@@ -147,18 +153,21 @@ public abstract class Control implements ControlImpl {
 
     @Override
     public void onRotate() {
-        if (isReady) {
+        if (isReady && !isRunning) {
+            isRunning = true;
             mSoundService.onRotate();
             mVibrateService.onRotate();
             mShapes[0].preRotate();
             for (Point point : mShapes[0].prePoints) {
                 if (point.x < 0 || point.x >= hCount || point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
                     mShapes[0].preBack();
+                    isRunning = false;
                     return;
                 }
             }
             mShapes[0].rotate();
             mView.postInvalidate();
+            isRunning = false;
         }
     }
 
@@ -189,7 +198,11 @@ public abstract class Control implements ControlImpl {
 
     @Override
     public void onOver() {
-        // TODO: 2017/10/21
+        isReady = false;
+        isRunning = false;
+        mSoundService.onOver();
+        mVibrateService.onOver();
+        mCallback.onOver();
     }
 
     @Override
@@ -240,21 +253,24 @@ public abstract class Control implements ControlImpl {
 
     // TODO: 2017/10/17 忽略过滤掉密集操作
     private void tryMoveDown() {
-        if (!isReady) return;
-        mShapes[0].preMove(false, 1);
-        int state = 0; // 正常状态
-        for (Point point : mShapes[0].prePoints) {
-            if (point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
-                cancelInterval();
-                state = 1; // 触底
-                break;
+        if (isReady && !isRunning) {
+            isRunning = true;
+            mShapes[0].preMove(false, 1);
+            int state = 0; // 正常状态
+            for (Point point : mShapes[0].prePoints) {
+                if (point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
+                    cancelInterval();
+                    state = 1; // 触底
+                    break;
+                }
             }
-        }
-        if (state == 0) {
-            mShapes[0].move(false, 1);
-            mView.postInvalidate();
-        } else {
-            onLand();
+            if (state == 0) {
+                mShapes[0].move(false, 1);
+                mView.postInvalidate();
+                isRunning = false;
+            } else {
+                onLand();
+            }
         }
     }
 }
