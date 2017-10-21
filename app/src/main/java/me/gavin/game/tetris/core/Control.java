@@ -251,7 +251,6 @@ abstract class Control implements ControlImpl {
         mView.postInvalidate();
     }
 
-    // TODO: 2017/10/17 忽略过滤掉密集操作
     private void tryMoveDown() {
         if (isReady && !isRunning) {
             isRunning = true;
