@@ -15,6 +15,8 @@ public interface TetrisCallback {
 
     void onClear(int clearCount);
 
+    void onScoreChange(int lineCount, long score, int multiple);
+
     void onOver();
 
 }

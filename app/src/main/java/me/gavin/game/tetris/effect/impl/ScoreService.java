@@ -13,7 +13,11 @@ public interface ScoreService {
 
     void onNextShape(int clearCount);
 
+    int getLineCount();
+
     long getScore();
+
+    int getMultiple();
 
     void onSavedInstanceState();
 

@@ -27,6 +27,8 @@ public class TetrisSoleControl extends TetrisControl {
         for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
                 isReady = false;
+                mSoundService.onOver();
+                mVibrateService.onOver();
                 mCallback.onOver();
                 return;
             }
@@ -63,6 +65,7 @@ public class TetrisSoleControl extends TetrisControl {
 
         if (mClearLines.size() > 0) {
             doClear();
+            mScoreService.onClear(mClearLines.size());
             mCallback.onClear(mClearLines.size());
         } else {
             toNext();
@@ -73,8 +76,9 @@ public class TetrisSoleControl extends TetrisControl {
         mView.postInvalidate();
         System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
         mShapes[mShapes.length - 1] = Utils.nextShape();
+        mScoreService.onNextShape(mClearLines.size());
         mCallback.onNextShape(mShapes[1], mClearLines.size());
-        onContinue();
+        onStartTimer();
     }
 
     private void doClear() {
@@ -130,6 +134,8 @@ public class TetrisSoleControl extends TetrisControl {
                             mClearLines.set(i, mClearLines.get(i) + 1);
                         }
                     }
+                    mSoundService.onClear();
+                    mVibrateService.onClear();
                     mCallback.onClear();
                     return 0;
                 })

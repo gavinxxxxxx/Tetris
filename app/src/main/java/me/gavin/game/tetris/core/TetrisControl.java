@@ -13,6 +13,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.gavin.game.tetris.Config;
 import me.gavin.game.tetris.core.shape.Shape;
+import me.gavin.game.tetris.effect.ScoreManager;
+import me.gavin.game.tetris.effect.SoundManager;
+import me.gavin.game.tetris.effect.VibrateManager;
+import me.gavin.game.tetris.effect.impl.ScoreService;
+import me.gavin.game.tetris.effect.impl.SoundService;
+import me.gavin.game.tetris.effect.impl.VibrateService;
 import me.gavin.game.tetris.next.Utils;
 import me.gavin.game.tetris.util.JsonUtil;
 import me.gavin.game.tetris.util.SPUtil;
@@ -27,6 +33,10 @@ public abstract class TetrisControl {
     final int hCount = Config.HORIZONTAL_COUNT;
     final int vCount = Config.VERTICAL_COUNT;
     float space = 2.5f;
+
+    SoundService mSoundService;
+    VibrateService mVibrateService;
+    ScoreService mScoreService;
 
     Cell[][] mCells;
     Shape[] mShapes;
@@ -45,6 +55,15 @@ public abstract class TetrisControl {
         this.mView = view;
         this.mCallback = callback;
         view.setControl(this);
+
+        mSoundService = new SoundManager(view.getContext());
+        mVibrateService = new VibrateManager(view.getContext());
+        mScoreService = new ScoreManager(view.getContext());
+
+        if (!isRestart) {
+            mScoreService.onRestoreInstanceState();
+            mCallback.onScoreChange(mScoreService.getLineCount(), mScoreService.getScore(), mScoreService.getMultiple());
+        }
     }
 
     /**
@@ -93,6 +112,8 @@ public abstract class TetrisControl {
 
     public void onLeft() {
         if (isReady) {
+            mSoundService.onMove();
+            mVibrateService.onMove();
             mShapes[0].preMove(true, -1);
             for (Point point : mShapes[0].prePoints) {
                 if (point.x < 0 || point.y >= 0 && mCells[point.x][point.y].had) {
@@ -107,6 +128,8 @@ public abstract class TetrisControl {
 
     public void onRight() {
         if (isReady) {
+            mSoundService.onMove();
+            mVibrateService.onMove();
             mShapes[0].preMove(true, 1);
             for (Point point : mShapes[0].prePoints) {
                 if (point.x >= hCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
@@ -120,19 +143,25 @@ public abstract class TetrisControl {
     }
 
     public void onUp() {
-        if (isReady) {
-            onRotate();
-        }
+//        if (isReady) {
+//            mSoundService.onRotate();
+//            mVibrateService.onRotate();
+//            onRotate();
+//        }
     }
 
     public void onDown() {
         if (isReady) {
+            mSoundService.onMove();
+            mVibrateService.onMove();
             tryMoveDown();
         }
     }
 
     public void onDrop() {
         if (isReady) {
+            mSoundService.onDrop();
+            mVibrateService.onDrop();
             int diff = 0;
             for (int i = 1; i <= vCount + 1; i++) { // I 旋转后可下落距离大于 vCount
                 mShapes[0].preMove(false, i);
@@ -154,6 +183,8 @@ public abstract class TetrisControl {
 
     public void onRotate() {
         if (isReady) {
+            mSoundService.onRotate();
+            mVibrateService.onRotate();
             mShapes[0].preRotate();
             for (Point point : mShapes[0].prePoints) {
                 if (point.x < 0 || point.x >= hCount || point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
@@ -171,51 +202,34 @@ public abstract class TetrisControl {
         cancelInterval();
     }
 
-    public void onContinue() {
+    public void onStartTimer() {
         isReady = true;
         initInterval();
     }
 
+    public void onMute(boolean state) {
+        mSoundService.setEnable(!state);
+    }
+
     public void onSavedInstanceState() {
+        mScoreService.onSavedInstanceState();
         TetrisInstanceState state = new TetrisInstanceState();
         state.setCells(mCells);
         state.setShapes(mShapes);
         SPUtil.saveString(mView.getContext(), "instanceState", JsonUtil.toJson(state));
     }
 
-    public void onRestoreInstanceState() {
-        TetrisInstanceState state = JsonUtil.toObj(SPUtil.getString(mView.getContext(), "instanceState"), TetrisInstanceState.class);
-        if (state != null) {
-            mCells = state.getCells();
-            mShapes = state.getShapes();
-            // mCallback.onNextShape(mShapes[1], 0);
-        } else {
-            mCells = new Cell[hCount][vCount];
-            for (int i = 0; i < hCount; i++) {
-                for (int j = 0; j < vCount; j++) {
-                    mCells[i][j] = new Cell();
-                }
-            }
-            mShapes = new Shape[2];
-            for (int i = 0; i < mShapes.length; i++) {
-                mShapes[i] = Utils.nextShape();
-            }
-        }
-        mView.postInvalidate();
-    }
-
     public void dispose() {
+        mSoundService.dispose();
+        mVibrateService.dispose();
         mTimerDisposable.dispose();
         // TODO: 2017/10/18
     }
 
-    public boolean isDisposed() {
-        // TODO: 2017/10/18
-        return false;
-    }
-
     public void ready(boolean isRestart) {
-        if (isRestart) {
+        TetrisInstanceState state = JsonUtil.toObj(
+                SPUtil.getString(mView.getContext(), "instanceState"), TetrisInstanceState.class);
+        if (isRestart || state == null) {
             SPUtil.saveString(mView.getContext(), "instanceState", null);
             mCells = new Cell[hCount][vCount];
             for (int i = 0; i < hCount; i++) {
@@ -228,12 +242,12 @@ public abstract class TetrisControl {
                 mShapes[i] = Utils.nextShape();
             }
         } else {
-            onRestoreInstanceState();
+            mScoreService.onRestoreInstanceState();
+            mCells = state.getCells();
+            mShapes = state.getShapes();
+            // mCallback.onNextShape(mShapes[1], 0);
         }
         mView.postInvalidate();
     }
 
-    public void go() {
-        onContinue();
-    }
 }
