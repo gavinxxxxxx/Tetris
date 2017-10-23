@@ -14,7 +14,7 @@ public class ScoreManager implements ScoreService {
 
     private Context mContext;
 
-    private int lineCount;
+    private int lineCount = 0;
     private long score = 0;
     private int multiple = 1;
 

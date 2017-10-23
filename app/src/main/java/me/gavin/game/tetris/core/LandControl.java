@@ -63,6 +63,7 @@ public final class LandControl extends Control {
             doClear();
             mScoreService.onClear(mClearLines.size());
             mCallback.onClear(mClearLines.size());
+            mCallback.onScoreChange(mScoreService.getLineCount(), mScoreService.getScore(), mScoreService.getMultiple());
         } else {
             toNext();
         }

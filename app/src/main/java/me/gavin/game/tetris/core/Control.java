@@ -249,6 +249,7 @@ abstract class Control implements ControlImpl {
             for (int i = 0; i < mShapes.length; i++) {
                 mShapes[i] = Utils.nextShape();
             }
+            mCallback.onNextShape(mShapes[1], 0);
         }
         mView.postInvalidate();
     }
