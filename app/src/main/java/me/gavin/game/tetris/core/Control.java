@@ -118,7 +118,7 @@ abstract class Control implements ControlImpl {
     @Override
     public void onDown() {
         if (isReady && !isRunning) {
-            isRunning = true;
+            // isRunning = true;
             mSoundService.onMove();
             mVibrateService.onMove();
             tryMoveDown();
@@ -132,16 +132,18 @@ abstract class Control implements ControlImpl {
             isRunning = true;
             mSoundService.onDrop();
             mVibrateService.onDrop();
+            boolean flag = false;
             int diff = 0;
             for (int i = 1; i <= vCount + 1; i++) { // I 旋转后可下落距离大于 vCount
                 mShapes[0].preMove(false, i);
                 for (Point point : mShapes[0].prePoints) {
                     if (point.y >= vCount || point.y >= 0 && mCells[point.x][point.y].had) {
+                        flag = true;
                         diff = i - 1;
                         break;
                     }
                 }
-                if (diff > 0) {
+                if (flag) {
                     cancelInterval();
                     mShapes[0].move(false, diff);
                     onLand();
@@ -234,7 +236,7 @@ abstract class Control implements ControlImpl {
             mScoreService.onRestoreInstanceState();
             mCells = state.getCells();
             mShapes = state.getShapes();
-            // mCallback.onNextShape(mShapes[1], 0);
+            mCallback.onNextShape(mShapes[1], 0); // TODO: 2017/10/23 clearCount 未复原
         } else {
             SPUtil.saveString(mView.getContext(), "instanceState", null);
             mCells = new Cell[hCount][vCount];
