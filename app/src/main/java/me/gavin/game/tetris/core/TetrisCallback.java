@@ -1,6 +1,7 @@
 package me.gavin.game.tetris.core;
 
 import me.gavin.game.tetris.core.shape.Shape;
+import me.gavin.game.tetris.effect.impl.ScoreService;
 
 /**
  * TetrisCallback
@@ -9,13 +10,13 @@ import me.gavin.game.tetris.core.shape.Shape;
  */
 public interface TetrisCallback {
 
-    void onNextShape(Shape shape, int clearCount);
+    void onNextShape(Shape shape);
 
     void onClear();
 
     void onClear(int clearCount);
 
-    void onScoreChange(int lineCount, long score, int multiple);
+    void onScoreChange(ScoreService service);
 
     void onOver();
 

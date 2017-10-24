@@ -19,8 +19,6 @@ public interface ScoreService {
 
     int getMultiple();
 
-    void onSavedInstanceState();
-
-    void onRestoreInstanceState();
+    void onRestore(int count, long score, int multiple);
 
 }

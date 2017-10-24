@@ -5,7 +5,7 @@ package me.gavin.game.tetris;
  *
  * @author gavin.xiong 2017/10/12
  */
-public class Config {
+public final class Config {
 
     public static final int HORIZONTAL_COUNT = 10;
     public static final int VERTICAL_COUNT = 20;

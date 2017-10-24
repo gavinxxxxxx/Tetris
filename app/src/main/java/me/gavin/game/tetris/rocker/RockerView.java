@@ -172,7 +172,7 @@ public class RockerView extends View {
     private void responseDirectionEvent() {
         float distance = MathUtils.getDistance(mAreaPosition.x, mAreaPosition.y, mRockerPosition.x, mRockerPosition.y);
         int directionEvent = EVENT_DIRECTION_CENTER;
-        if (distance > mRockerRadius / 2) {
+        if (distance > mRockerRadius / 3 * 2) {
             float radian = MathUtils.getRadian(mAreaPosition, new Point(mRockerPosition.x, mRockerPosition.y));
             int angle = getAngleConvert(radian);
             if (angle >= 315) {

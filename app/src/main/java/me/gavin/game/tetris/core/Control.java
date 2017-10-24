@@ -10,6 +10,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.Config;
 import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.effect.ScoreManager;
@@ -20,7 +21,7 @@ import me.gavin.game.tetris.effect.impl.SoundService;
 import me.gavin.game.tetris.effect.impl.VibrateService;
 import me.gavin.game.tetris.next.Utils;
 import me.gavin.game.tetris.util.JsonUtil;
-import me.gavin.game.tetris.util.SPUtil;
+import me.gavin.game.tetris.util.SaveHelper;
 
 /**
  * Control
@@ -58,14 +59,9 @@ abstract class Control implements ControlImpl {
 
         mSoundService = new SoundManager(view.getContext());
         mVibrateService = new VibrateManager(view.getContext());
-        mScoreService = new ScoreManager(view.getContext());
+        mScoreService = new ScoreManager();
 
         initState(isContinue);
-
-        if (isContinue) {
-            mScoreService.onRestoreInstanceState();
-            mCallback.onScoreChange(mScoreService.getLineCount(), mScoreService.getScore(), mScoreService.getMultiple());
-        }
     }
 
     abstract void onLand();
@@ -145,6 +141,8 @@ abstract class Control implements ControlImpl {
                 }
                 if (flag) {
                     cancelInterval();
+                    mScoreService.onDrop();
+                    mCallback.onScoreChange(mScoreService);
                     mShapes[0].move(false, diff);
                     onLand();
                     return;
@@ -214,11 +212,13 @@ abstract class Control implements ControlImpl {
 
     @Override
     public void onSavedInstanceState() {
-        mScoreService.onSavedInstanceState();
-        TetrisInstanceState state = new TetrisInstanceState();
-        state.setCells(mCells);
-        state.setShapes(mShapes);
-        SPUtil.saveString(mView.getContext(), "instanceState", JsonUtil.toJson(state));
+        Save save = new Save();
+        save.setcCount(mScoreService.getLineCount());
+        save.setScore(mScoreService.getScore());
+        save.setMultiple(mScoreService.getMultiple());
+        save.setCells(mCells);
+        save.setShapes(mShapes);
+        SaveHelper.write(BundleKey.SAVE, JsonUtil.toJson(save));
     }
 
     @Override
@@ -230,15 +230,13 @@ abstract class Control implements ControlImpl {
     }
 
     private void initState(boolean isContinue) {
-        TetrisInstanceState state = JsonUtil.toObj(
-                SPUtil.getString(mView.getContext(), "instanceState"), TetrisInstanceState.class);
-        if (isContinue && state != null) {
-            mScoreService.onRestoreInstanceState();
-            mCells = state.getCells();
-            mShapes = state.getShapes();
-            mCallback.onNextShape(mShapes[1], 0); // TODO: 2017/10/23 clearCount 未复原
+        Save save = JsonUtil.toObj(SaveHelper.read(BundleKey.SAVE), Save.class);
+        if (isContinue && save != null) {
+            mScoreService.onRestore(save.getcCount(), save.getScore(), save.getMultiple());
+            mCallback.onScoreChange(mScoreService);
+            mCells = save.getCells();
+            mShapes = save.getShapes();
         } else {
-            SPUtil.saveString(mView.getContext(), "instanceState", null);
             mCells = new Cell[hCount][vCount];
             for (int i = 0; i < hCount; i++) {
                 for (int j = 0; j < vCount; j++) {
@@ -249,8 +247,8 @@ abstract class Control implements ControlImpl {
             for (int i = 0; i < mShapes.length; i++) {
                 mShapes[i] = Utils.nextShape();
             }
-            mCallback.onNextShape(mShapes[1], 0);
         }
+        mCallback.onNextShape(mShapes[1]);
         mView.postInvalidate();
     }
 

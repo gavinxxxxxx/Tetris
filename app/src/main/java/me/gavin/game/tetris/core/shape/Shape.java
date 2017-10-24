@@ -58,7 +58,7 @@ public class Shape {
         this.morphological = morphological;
     }
 
-    void initPre() {
+    private void initPre() {
         if (prePoints == null) {
             prePoints = new Point[pointCount];
             for (int i = 0; i < pointCount; i++) {

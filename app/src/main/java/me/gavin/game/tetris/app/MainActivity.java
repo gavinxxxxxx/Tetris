@@ -8,12 +8,14 @@ import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.core.ControlImpl;
 import me.gavin.game.tetris.core.LandControl;
 import me.gavin.game.tetris.core.TetrisCallback;
 import me.gavin.game.tetris.core.shape.Shape;
 import me.gavin.game.tetris.databinding.ActMainBinding;
+import me.gavin.game.tetris.effect.impl.ScoreService;
 import me.gavin.game.tetris.rocker.RockerView;
 
 public class MainActivity extends Activity implements TetrisCallback {
@@ -30,11 +32,11 @@ public class MainActivity extends Activity implements TetrisCallback {
     }
 
     private void init() {
-        boolean isContinue = getIntent().getBooleanExtra("isContinue", false);
+        boolean isContinue = getIntent().getBooleanExtra(BundleKey.CONTINUE, false);
         mControl = new LandControl(mBinding.tetris, this, isContinue);
 
-        mBinding.btnA.setOnClickListener(v -> mControl.onRotate());
-        mBinding.btnB.setOnClickListener(v -> mControl.onDrop());
+        mBinding.ivRotate.setOnClickListener(v -> mControl.onRotate());
+        mBinding.ivDrop.setOnClickListener(v -> mControl.onDrop());
         mBinding.rocker.setDirectionListener(event -> {
             switch (event) {
                 case RockerView.EVENT_DIRECTION_LEFT:
@@ -72,7 +74,7 @@ public class MainActivity extends Activity implements TetrisCallback {
     }
 
     @Override
-    public void onNextShape(Shape shape, int clearCount) {
+    public void onNextShape(Shape shape) {
         mBinding.next.setShape(shape);
     }
 
@@ -85,16 +87,16 @@ public class MainActivity extends Activity implements TetrisCallback {
     }
 
     @Override
-    public void onScoreChange(int lineCount, long score, int multiple) {
-        mBinding.tvScore.setText(String.valueOf(score * 100));
+    public void onScoreChange(ScoreService service) {
+        mBinding.tvScore.setText(String.valueOf(service.getScore() * 100));
     }
 
     @Override
     public void onOver() {
-        // TODO: 2017/10/19 结束
         Toast.makeText(MainActivity.this, "GAME OVER", Toast.LENGTH_LONG).show();
         Observable.timer(3000, TimeUnit.MILLISECONDS)
                 .subscribe(arg0 -> {
+                    // TODO: 2017/10/19 结束
                     MainActivity.this.finish();
                 });
     }

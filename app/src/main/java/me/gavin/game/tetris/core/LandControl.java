@@ -63,7 +63,7 @@ public final class LandControl extends Control {
             doClear();
             mScoreService.onClear(mClearLines.size());
             mCallback.onClear(mClearLines.size());
-            mCallback.onScoreChange(mScoreService.getLineCount(), mScoreService.getScore(), mScoreService.getMultiple());
+            mCallback.onScoreChange(mScoreService);
         } else {
             toNext();
         }
@@ -136,7 +136,7 @@ public final class LandControl extends Control {
         System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
         mShapes[mShapes.length - 1] = Utils.nextShape();
         mScoreService.onNextShape(mClearLines.size());
-        mCallback.onNextShape(mShapes[1], mClearLines.size());
+        mCallback.onNextShape(mShapes[1]);
         isRunning = false;
         onStart();
     }
