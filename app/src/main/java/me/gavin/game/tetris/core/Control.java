@@ -51,6 +51,7 @@ abstract class Control implements ControlImpl {
 
     private boolean isReady;
     boolean isRunning;
+    boolean isOver;
 
     Control(TetrisView view, TetrisCallback callback, boolean isContinue) {
         this.mView = view;
@@ -212,13 +213,17 @@ abstract class Control implements ControlImpl {
 
     @Override
     public void onSavedInstanceState() {
-        Save save = new Save();
-        save.setcCount(mScoreService.getLineCount());
-        save.setScore(mScoreService.getScore());
-        save.setMultiple(mScoreService.getMultiple());
-        save.setCells(mCells);
-        save.setShapes(mShapes);
-        SaveHelper.write(BundleKey.SAVE, JsonUtil.toJson(save));
+        if (isOver) {
+            SaveHelper.delete(BundleKey.SAVE);
+        } else {
+            Save save = new Save();
+            save.setcCount(mScoreService.getLineCount());
+            save.setScore(mScoreService.getScore());
+            save.setMultiple(mScoreService.getMultiple());
+            save.setCells(mCells);
+            save.setShapes(mShapes);
+            SaveHelper.write(BundleKey.SAVE, JsonUtil.toJson(save));
+        }
     }
 
     @Override

@@ -11,4 +11,6 @@ public final class BundleKey {
 
     public static final String CONTINUE = "continue"; // 继续
 
+    public static final String RANK = "RANK"; // 排行
+
 }

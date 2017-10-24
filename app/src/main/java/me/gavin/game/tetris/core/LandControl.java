@@ -3,11 +3,19 @@ package me.gavin.game.tetris.core;
 import android.graphics.Point;
 import android.util.SparseArray;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import me.gavin.game.tetris.BundleKey;
+import me.gavin.game.tetris.effect.Rank;
 import me.gavin.game.tetris.next.Utils;
+import me.gavin.game.tetris.util.JsonUtil;
+import me.gavin.game.tetris.util.SaveHelper;
 
 /**
  * LandControlImpl
@@ -25,6 +33,19 @@ public final class LandControl extends Control {
         isRunning = true;
         for (Point point : mShapes[0].prePoints) {
             if (point.y <= 0) { // game over
+                isOver = true;
+                List<Rank> rankList = JsonUtil.toList(SaveHelper.read(BundleKey.RANK), new TypeToken<ArrayList<Rank>>() {
+                });
+                if (rankList == null) {
+                    rankList = new ArrayList<>();
+                }
+                Rank rank = new Rank();
+                rank.setLineCount(mScoreService.getLineCount());
+                rank.setScore(mScoreService.getScore());
+                rank.setTime(System.currentTimeMillis());
+                rank.setTitle(null);
+                rankList.add(rank);
+                SaveHelper.write(BundleKey.RANK, JsonUtil.toJson(rankList));
                 onOver();
                 return;
             }

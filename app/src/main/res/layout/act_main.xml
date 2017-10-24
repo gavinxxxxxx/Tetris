@@ -5,7 +5,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#235689">
+        android:background="@color/colorBackground">
 
         <me.gavin.game.tetris.core.TetrisView
             android:id="@+id/tetris"

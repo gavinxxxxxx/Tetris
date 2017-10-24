@@ -30,20 +30,22 @@ public class StartActivity extends Activity {
         ((LinearLayout.LayoutParams) mBinding.ivLogo.getLayoutParams()).topMargin = size / 3;
         mBinding.btnContinue.getLayoutParams().width = size;
         mBinding.btnStart.getLayoutParams().width = size;
+        mBinding.btnRank.getLayoutParams().width = size;
 
+        mBinding.btnContinue.setOnClickListener(v ->
+                startActivity(new Intent(this, MainActivity.class)
+                        .putExtra(BundleKey.CONTINUE, true)));
+        mBinding.btnStart.setOnClickListener(v ->
+                startActivity(new Intent(this, MainActivity.class)
+                        .putExtra(BundleKey.CONTINUE, false)));
+        mBinding.btnRank.setOnClickListener(v -> startActivity(new Intent(this, RankActivity.class)));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         String save = SaveHelper.read(BundleKey.SAVE);
         mBinding.btnContinue.setVisibility(TextUtils.isEmpty(save) ? View.GONE : View.VISIBLE);
-        mBinding.btnContinue.setOnClickListener(v -> {
-            v.setOnClickListener(null);
-            startActivity(new Intent(this, MainActivity.class).putExtra(BundleKey.CONTINUE, true));
-            finish();
-        });
-
         mBinding.btnStart.setText(TextUtils.isEmpty(save) ? "开始" : "重新开始");
-        mBinding.btnStart.setOnClickListener(v -> {
-            v.setOnClickListener(null);
-            startActivity(new Intent(this, MainActivity.class).putExtra(BundleKey.CONTINUE, false));
-            finish();
-        });
     }
 }

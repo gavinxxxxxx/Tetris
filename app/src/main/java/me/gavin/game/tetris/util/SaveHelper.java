@@ -41,6 +41,14 @@ public final class SaveHelper {
         return sb.toString();
     }
 
+    public static void delete(String name) {
+        String path = getFilesDir().getPath() + File.separator + name;
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     private static File getFilesDir() {
         // TODO: 2017/10/24 选择位置
         // return App.get().getFilesDir();

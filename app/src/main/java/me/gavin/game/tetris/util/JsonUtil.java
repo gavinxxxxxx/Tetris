@@ -13,7 +13,6 @@ import java.util.List;
  * Gson 工具类
  * <p>
  * | @Expose 过滤字段：serialize和deserialize。默认都是true。 excludeFieldsWithoutExposeAnnotation 后有效
- * | transient Java关键字? 永久地关闭转换(包括其他?)
  * <p>
  * L.e(JsonUtil.toList(json1, new TypeToken<ArrayList<User>>() {}));
  * L.e(JsonUtil.toList2(json1, User[].class));

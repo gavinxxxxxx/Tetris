@@ -23,6 +23,12 @@
 
         <activity
             android:name=".app.MainActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.RankActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
     </application>
