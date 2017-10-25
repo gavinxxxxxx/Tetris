@@ -1,9 +1,10 @@
 <resources>
 
     <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar.Fullscreen">
-        <item name="android:colorPrimary">@color/colorBackground</item>
-        <item name="android:colorPrimaryDark">@color/colorBackground</item>
-        <item name="android:colorAccent">@color/colorBackground</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 
 </resources>

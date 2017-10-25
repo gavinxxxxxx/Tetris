@@ -17,7 +17,6 @@ import java.util.List;
 import io.reactivex.Observable;
 import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.Config;
-import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.databinding.ItemRankBinding;
 import me.gavin.game.tetris.effect.Rank;
 import me.gavin.game.tetris.util.JsonUtil;
@@ -35,8 +34,6 @@ public class RankActivity extends ListActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getListView().setBackgroundColor(getResources().getColor(R.color.colorBackground));
-
         Observable.just(BundleKey.RANK)
                 .map(s -> SPUtil.getString(s, s))
                 .map(json -> {

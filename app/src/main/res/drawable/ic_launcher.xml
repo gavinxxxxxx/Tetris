@@ -6,23 +6,31 @@
     android:viewportWidth="24.0">
 
     <path
-        android:pathData="h24v24h-24z"
-        tools:fillColor="#66666666" />
+        tools:fillColor="#66666666"
+        tools:pathData="h24v24h-24z" />
+
+    <path
+        tools:fillColor="#22222222"
+        tools:pathData="M0, 12a12 12 1 1 1 24 0a12 12 1 1 1 -24 0" />
 
     <path
         android:fillColor="@android:color/holo_red_light"
-        android:pathData="M2.75,6.5v5.5h5.5v-5.5z" />
+        android:pathData="M2.75,7v5.5h5.5v-5.5z" />
+
+    <path
+        android:fillColor="@android:color/holo_red_light"
+        android:pathData="M2.75,7v5.5h5.5v-5.5z" />
 
     <path
         android:fillColor="@android:color/holo_orange_light"
-        android:pathData="M9.25,6.5v5.5h5.5v-5.5z" />
+        android:pathData="M9.25,7v5.5h5.5v-5.5z" />
 
     <path
         android:fillColor="@android:color/holo_green_light"
-        android:pathData="M15.75,6.5v5.5h5.5v-5.5z" />
+        android:pathData="M15.75,7v5.5h5.5v-5.5z" />
 
     <path
         android:fillColor="@android:color/holo_blue_light"
-        android:pathData="M9.25,13v5.5h5.5v-5.5z" />
+        android:pathData="M9.25,13.5v5.5h5.5v-5.5z" />
 
 </vector>
