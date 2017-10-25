@@ -21,7 +21,7 @@ import me.gavin.game.tetris.effect.impl.SoundService;
 import me.gavin.game.tetris.effect.impl.VibrateService;
 import me.gavin.game.tetris.next.Utils;
 import me.gavin.game.tetris.util.JsonUtil;
-import me.gavin.game.tetris.util.SaveHelper;
+import me.gavin.game.tetris.util.SPUtil;
 
 /**
  * Control
@@ -203,7 +203,7 @@ abstract class Control implements ControlImpl {
         isRunning = false;
         mSoundService.onOver();
         mVibrateService.onOver();
-        mCallback.onOver();
+        mCallback.onOver(mScoreService.getLineCount(), mScoreService.getScore());
     }
 
     @Override
@@ -214,7 +214,7 @@ abstract class Control implements ControlImpl {
     @Override
     public void onSavedInstanceState() {
         if (isOver) {
-            SaveHelper.delete(BundleKey.SAVE);
+            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, "");
         } else {
             Save save = new Save();
             save.setcCount(mScoreService.getLineCount());
@@ -222,7 +222,7 @@ abstract class Control implements ControlImpl {
             save.setMultiple(mScoreService.getMultiple());
             save.setCells(mCells);
             save.setShapes(mShapes);
-            SaveHelper.write(BundleKey.SAVE, JsonUtil.toJson(save));
+            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, JsonUtil.toJson(save));
         }
     }
 
@@ -235,7 +235,7 @@ abstract class Control implements ControlImpl {
     }
 
     private void initState(boolean isContinue) {
-        Save save = JsonUtil.toObj(SaveHelper.read(BundleKey.SAVE), Save.class);
+        Save save = JsonUtil.toObj(SPUtil.getString(BundleKey.SAVE, BundleKey.SAVE), Save.class);
         if (isContinue && save != null) {
             mScoreService.onRestore(save.getcCount(), save.getScore(), save.getMultiple());
             mCallback.onScoreChange(mScoreService);

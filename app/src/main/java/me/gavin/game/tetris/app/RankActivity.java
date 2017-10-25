@@ -11,14 +11,17 @@ import android.widget.BaseAdapter;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Observable;
 import me.gavin.game.tetris.BundleKey;
+import me.gavin.game.tetris.Config;
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.databinding.ItemRankBinding;
 import me.gavin.game.tetris.effect.Rank;
 import me.gavin.game.tetris.util.JsonUtil;
-import me.gavin.game.tetris.util.SaveHelper;
+import me.gavin.game.tetris.util.SPUtil;
 
 /**
  * 排行榜
@@ -34,9 +37,22 @@ public class RankActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         getListView().setBackgroundColor(getResources().getColor(R.color.colorBackground));
 
-        rankList = JsonUtil.toList(SaveHelper.read(BundleKey.RANK), new TypeToken<ArrayList<Rank>>() {
-        });
-        setListAdapter(new RankAdapter());
+        Observable.just(BundleKey.RANK)
+                .map(s -> SPUtil.getString(s, s))
+                .map(json -> {
+                    List<Rank> list = JsonUtil.toList(json, new TypeToken<ArrayList<Rank>>() {
+                    });
+                    return list == null ? new ArrayList<Rank>() : list;
+                })
+                .map(list -> {
+                    Collections.sort(list, (o1, o2) -> o1.getScore() > o2.getScore() ? -1 : 1);
+                    return list;
+                })
+                .map(list -> list.size() > Config.RANK_COUNT ? list.subList(0, Config.RANK_COUNT) : list)
+                .subscribe(list -> {
+                    rankList = list;
+                    setListAdapter(new RankAdapter());
+                }, Throwable::printStackTrace);
     }
 
     private class RankAdapter extends BaseAdapter {
@@ -72,9 +88,9 @@ public class RankActivity extends ListActivity {
         }
 
         private void onBind(ItemRankBinding binding, Rank t, int position) {
-            binding.tvNum.setText(String.valueOf(position));
-            binding.tvTitle.setText(TextUtils.isEmpty(t.getTitle()) ? "Tetris" : t.getTitle());
-            binding.tvScore.setText(String.valueOf(t.getScore()));
+            binding.tvNum.setText(String.format("NO.%s", position + 1));
+            binding.tvTitle.setText(TextUtils.isEmpty(t.getTitle()) ? "未名" : t.getTitle());
+            binding.tvScore.setText(String.valueOf(t.getScore() * 100));
         }
     }
 

@@ -18,6 +18,6 @@ public interface TetrisCallback {
 
     void onScoreChange(ScoreService service);
 
-    void onOver();
+    void onOver(int clearedLineCount, long score);
 
 }

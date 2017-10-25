@@ -14,15 +14,23 @@ public class SPUtil {
     private static String PREFERENCE = "PREFERENCE";
 
     public static void saveString(String key, String value) {
-        App.get().getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE)
+        saveString(PREFERENCE, key, value);
+    }
+
+    public static void saveString(String name, String key, String value) {
+        App.get().getSharedPreferences(name, Context.MODE_PRIVATE)
                 .edit()
                 .putString(key, value)
                 .apply();
     }
 
     public static String getString(String key) {
-        return App.get().getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE)
-                .getString(key, "");
+        return getString(PREFERENCE, key);
+    }
+
+    public static String getString(String name, String key) {
+        return App.get().getSharedPreferences(name, Context.MODE_PRIVATE)
+                .getString(key, null);
     }
 
     public static void saveBoolean(String key, boolean value) {

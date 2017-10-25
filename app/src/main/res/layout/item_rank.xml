@@ -12,6 +12,7 @@
             android:id="@+id/tvNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
             android:singleLine="true"
             android:textColor="#FFFFFF"
             tools:text="1" />

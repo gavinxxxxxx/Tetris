@@ -13,7 +13,7 @@ import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.databinding.ActStartBinding;
 import me.gavin.game.tetris.util.DisplayUtil;
-import me.gavin.game.tetris.util.SaveHelper;
+import me.gavin.game.tetris.util.SPUtil;
 
 public class StartActivity extends Activity {
 
@@ -44,7 +44,7 @@ public class StartActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        String save = SaveHelper.read(BundleKey.SAVE);
+        String save = SPUtil.getString(BundleKey.SAVE, BundleKey.SAVE);
         mBinding.btnContinue.setVisibility(TextUtils.isEmpty(save) ? View.GONE : View.VISIBLE);
         mBinding.btnStart.setText(TextUtils.isEmpty(save) ? "开始" : "重新开始");
     }

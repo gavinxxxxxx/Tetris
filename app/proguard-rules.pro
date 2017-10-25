@@ -27,4 +27,8 @@
 #-dontwarn org.greenrobot.greendao.database.**
 #-dontwarn rx.**
 #----------------------------------------------------------------------------
+-keep class me.gavin.game.tetris.core.Cell { *; }
+-keep class me.gavin.game.tetris.core.Save { *; }
+-keep class me.gavin.game.tetris.core.shape.** { *; }
+-keep class me.gavin.game.tetris.effect.Rank { *; }
 #----------------------------------------------------------------------------
