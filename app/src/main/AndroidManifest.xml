@@ -23,11 +23,19 @@
 
         <activity
             android:name=".app.MainActivity"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".app.RankActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".app.SettingActivity"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 

@@ -30,7 +30,7 @@ public class SPUtil {
 
     public static String getString(String name, String key) {
         return App.get().getSharedPreferences(name, Context.MODE_PRIVATE)
-                .getString(key, null);
+                .getString(key, "");
     }
 
     public static void saveBoolean(String key, boolean value) {

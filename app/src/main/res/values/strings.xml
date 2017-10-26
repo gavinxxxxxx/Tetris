@@ -1,3 +1,44 @@
 <resources>
     <string name="app_name">Tetris</string>
+    <!--<string name="app_name">Polyomino</string>-->
+
+    <string-array name="shape_mode">
+        <item>四格骨牌</item>
+        <item>四格骨牌 &amp; 五格骨牌简版</item>
+        <item>四格骨牌 &amp; + - .</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; + - .</item>
+        <item>自定义</item>
+    </string-array>
+    <string-array name="shape_mode_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="shape_type">
+        <item>四格骨牌</item>
+        <item>四格骨牌 &amp; 五格骨牌简版</item>
+        <item>四格骨牌 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
+        <item>自定义</item>
+    </string-array>
 </resources>

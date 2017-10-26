@@ -47,6 +47,8 @@ public class StartActivity extends Activity {
         });
         mBinding.btnRank.setOnClickListener(v ->
                 startActivity(new Intent(this, RankActivity.class)));
+        mBinding.ivSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, SettingActivity.class)));
     }
 
     @Override

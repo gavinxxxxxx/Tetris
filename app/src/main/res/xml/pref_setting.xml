@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="效果">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="soundEffect"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="音效" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="backgroundMusic"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="音乐" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="vibrateEffect"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="震动" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="场地">
+
+        <ListPreference
+            android:defaultValue="10"
+            android:enabled="false"
+            android:key="horizontalCount"
+            android:summary="10"
+            android:title="横向" />
+
+        <ListPreference
+            android:defaultValue="20"
+            android:enabled="false"
+            android:key="verticalCount"
+            android:summary="20"
+            android:title="纵向" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="模式">
+
+        <ListPreference
+            android:enabled="true"
+            android:entries="@array/shape_mode"
+            android:entryValues="@array/shape_mode_value"
+            android:key="shape_mode"
+            android:summary="四格骨牌"
+            android:title="模式" />
+
+        <MultiSelectListPreference
+            android:dependency="shape_mode"
+            android:entries="@array/shape_type"
+            android:entryValues="@array/shape_type"
+            android:key="shape_type"
+            android:summary="自定义"
+            android:title="自定义" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="附加">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="randomChange"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="随机变换" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="overturn"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="翻转" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="overturn"
+            android:summaryOff="禁用"
+            android:summaryOn="启用"
+            android:title="位移" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="关于">
+
+        <Preference
+            android:enabled="false"
+            android:summary="XXX 工作室"
+            android:title="关于" />
+
+        <Preference
+            android:enabled="false"
+            android:selectable="false"
+            android:summary="1.0"
+            android:title="版本号" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="更多">
+
+        <PreferenceScreen
+            android:summary="没有表述"
+            android:title="更多设置">
+
+            <SwitchPreference
+                android:key="other"
+                android:summary=""
+                android:title="其他设置" />
+
+            <CheckBoxPreference
+                android:summary=""
+                android:title="选项" />
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
