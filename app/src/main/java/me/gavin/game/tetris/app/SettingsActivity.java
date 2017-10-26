@@ -15,25 +15,26 @@ import me.gavin.game.tetris.util.L;
  *
  * @author gavin.xiong 2017/10/26
  */
-public class SettingActivity extends Activity {
+public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(android.R.id.content, new SettingFragment())
+                    .add(android.R.id.content, new SettingsFragment())
                     .commit();
         }
     }
 
-    public static class SettingFragment extends PreferenceFragment
+    public static class SettingsFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_setting);
+            getPreferenceManager().setSharedPreferencesName("SETTINGS");
+            addPreferencesFromResource(R.xml.pref_settings);
         }
 
         @Override

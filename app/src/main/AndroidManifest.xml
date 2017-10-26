@@ -34,7 +34,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".app.SettingActivity"
+            android:name=".app.SettingsActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
