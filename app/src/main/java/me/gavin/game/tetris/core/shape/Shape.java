@@ -3,56 +3,36 @@ package me.gavin.game.tetris.core.shape;
 import android.graphics.Point;
 
 /**
- * I | J | L | O | S | T | Z
+ * 4:   I | J | L | O | S | T | Z
+ * 5:   S | T | U | V | X | Z
  *
  * @author gavin.xiong 2017/10/11
  */
 public class Shape {
 
-    public static final int TYPE_0_I = 0;
-    public static final int TYPE_0_J = 1;
-    public static final int TYPE_0_L = 2;
-    public static final int TYPE_0_O = 3;
-    public static final int TYPE_0_S = 4;
-    public static final int TYPE_0_T = 5;
-    public static final int TYPE_0_Z = 6;
+    static final String TYPE_4_I = "I4";
+    static final String TYPE_4_J = "J4";
+    static final String TYPE_4_L = "L4";
+    static final String TYPE_4_O = "O4";
+    static final String TYPE_4_S = "S4";
+    static final String TYPE_4_T = "T4";
+    static final String TYPE_4_Z = "Z4";
+
+    static final String TYPE_5_S = "S5";
+    static final String TYPE_5_T = "T5";
+    static final String TYPE_5_U = "U5";
+    static final String TYPE_5_V = "V5";
+    static final String TYPE_5_X = "X5";
+    static final String TYPE_5_Z = "Z5";
 
     public int pointCount;
     public Point[] points;
     public Point[] prePoints;
 
-    public int type;
+    public String type;
     public int morphological; // 形态
 
     public int color;
-
-    public static Shape fromShape(Shape src) {
-        Shape shape = null;
-        if (src.type == TYPE_0_I) {
-            shape = new I(src.morphological);
-        } else if (src.type == TYPE_0_J) {
-            shape = new J(src.morphological);
-        } else if (src.type == TYPE_0_L) {
-            shape = new L(src.morphological);
-        } else if (src.type == TYPE_0_O) {
-            shape = new O();
-        } else if (src.type == TYPE_0_S) {
-            shape = new S(src.morphological);
-        } else if (src.type == TYPE_0_T) {
-            shape = new T(src.morphological);
-        } else if (src.type == TYPE_0_Z) {
-            shape = new Z(src.morphological);
-        }
-        if (shape != null) {
-            shape.pointCount = src.pointCount;
-            shape.points = src.points;
-            shape.prePoints = src.prePoints;
-            shape.type = src.type;
-            shape.morphological = src.morphological;
-            shape.color = src.color;
-        }
-        return shape;
-    }
 
     public Shape(int morphological) {
         this.morphological = morphological;
@@ -108,6 +88,65 @@ public class Shape {
             prePoints[i].x = points[i].x;
             prePoints[i].y = points[i].y;
         }
+    }
+
+    public static Shape fromShape(Shape src) {
+        Shape shape = null;
+        switch (src.type) {
+            case TYPE_4_I:
+                shape = new I(src.morphological);
+                break;
+            case TYPE_4_J:
+                shape = new J(src.morphological);
+                break;
+            case TYPE_4_L:
+                shape = new L(src.morphological);
+                break;
+            case TYPE_4_O:
+                shape = new O(src.morphological);
+                break;
+            case TYPE_4_S:
+                shape = new S(src.morphological);
+                break;
+            case TYPE_4_T:
+                shape = new T(src.morphological);
+                break;
+            case TYPE_4_Z:
+                shape = new Z(src.morphological);
+                break;
+
+            case TYPE_5_S:
+                shape = new S5(src.morphological);
+                break;
+            case TYPE_5_T:
+                shape = new T5(src.morphological);
+                break;
+            case TYPE_5_U:
+                shape = new U5(src.morphological);
+                break;
+            case TYPE_5_V:
+                shape = new V5(src.morphological);
+                break;
+            case TYPE_5_X:
+                shape = new X5(src.morphological);
+                break;
+            case TYPE_5_Z:
+                shape = new Z5(src.morphological);
+                break;
+
+            default:
+                // 未知类型
+                break;
+        }
+        if (shape != null) {
+            shape.pointCount = src.pointCount;
+            shape.points = src.points;
+            shape.prePoints = src.prePoints;
+            shape.type = src.type;
+            shape.morphological = src.morphological;
+            shape.color = src.color;
+        }
+        return shape;
     }
 
 }

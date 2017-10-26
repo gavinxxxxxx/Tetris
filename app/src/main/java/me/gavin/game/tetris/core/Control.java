@@ -240,7 +240,10 @@ abstract class Control implements ControlImpl {
             mScoreService.onRestore(save.getcCount(), save.getScore(), save.getMultiple());
             mCallback.onScoreChange(mScoreService);
             mCells = save.getCells();
-            mShapes = save.getShapes();
+            mShapes = new Shape[save.getShapes().length];
+            for (int i = 0; i < mShapes.length; i++) {
+                mShapes[i] = Shape.fromShape(save.getShapes()[i]);
+            }
         } else {
             mCells = new Cell[hCount][vCount];
             for (int i = 0; i < hCount; i++) {

@@ -17,13 +17,16 @@ import me.gavin.game.tetris.util.SPUtil;
 
 public class StartActivity extends Activity {
 
-    ActStartBinding mBinding;
+    private ActStartBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.act_start);
+        init();
+    }
 
+    private void init() {
         int size = DisplayUtil.getScreenWidth() / 5 * 3;
         mBinding.ivLogo.getLayoutParams().width = size;
         mBinding.ivLogo.getLayoutParams().height = size;
@@ -32,13 +35,18 @@ public class StartActivity extends Activity {
         mBinding.btnStart.getLayoutParams().width = size;
         mBinding.btnRank.getLayoutParams().width = size;
 
-        mBinding.btnContinue.setOnClickListener(v ->
-                startActivity(new Intent(this, MainActivity.class)
-                        .putExtra(BundleKey.CONTINUE, true)));
-        mBinding.btnStart.setOnClickListener(v ->
-                startActivity(new Intent(this, MainActivity.class)
-                        .putExtra(BundleKey.CONTINUE, false)));
-        mBinding.btnRank.setOnClickListener(v -> startActivity(new Intent(this, RankActivity.class)));
+        mBinding.btnContinue.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class)
+                    .putExtra(BundleKey.CONTINUE, true));
+            finish();
+        });
+        mBinding.btnStart.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class)
+                    .putExtra(BundleKey.CONTINUE, false));
+            finish();
+        });
+        mBinding.btnRank.setOnClickListener(v ->
+                startActivity(new Intent(this, RankActivity.class)));
     }
 
     @Override
