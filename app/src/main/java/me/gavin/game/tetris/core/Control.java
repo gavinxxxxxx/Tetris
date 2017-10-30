@@ -1,6 +1,8 @@
 package me.gavin.game.tetris.core;
 
+import android.content.Context;
 import android.graphics.Point;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,34 +14,24 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.Config;
-import me.gavin.game.tetris.core.shape.Shape;
+import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.effect.ScoreManager;
 import me.gavin.game.tetris.effect.SoundManager;
-import me.gavin.game.tetris.effect.VibrateManager;
-import me.gavin.game.tetris.effect.impl.ScoreService;
-import me.gavin.game.tetris.effect.impl.SoundService;
-import me.gavin.game.tetris.effect.impl.VibrateService;
 import me.gavin.game.tetris.next.Utils;
+import me.gavin.game.tetris.shape.Shape;
 import me.gavin.game.tetris.util.JsonUtil;
 import me.gavin.game.tetris.util.SPUtil;
 
-/**
- * Control
- *
- * @author gavin.xiong 2017/10/21
- */
-abstract class Control implements ControlImpl {
+public abstract class Control {
 
-    final int hCount = Config.HORIZONTAL_COUNT;
-    final int vCount = Config.VERTICAL_COUNT;
-    float space = 2.5f;
-
-    SoundService mSoundService;
-    VibrateService mVibrateService;
-    ScoreService mScoreService;
+    int hCount;
+    int vCount;
+    float space;
 
     Cell[][] mCells;
     Shape[] mShapes;
+
+    private Context mContext;
 
     TetrisView mView;
 
@@ -55,96 +47,122 @@ abstract class Control implements ControlImpl {
 
     Control(TetrisView view, TetrisCallback callback, boolean isContinue) {
         this.mView = view;
+        this.mContext = view.getContext();
         this.mCallback = callback;
+        init(isContinue);
         view.setControl(this);
-
-        mSoundService = new SoundManager(view.getContext());
-        mVibrateService = new VibrateManager(view.getContext());
-        mScoreService = new ScoreManager();
-
-        initState(isContinue);
     }
 
-    abstract void onLand();
+    private void init(boolean isContinue) {
+        Save save = JsonUtil.toObj(SPUtil.getString(BundleKey.SAVE, BundleKey.SAVE), Save.class);
+        if (isContinue && save != null) {
+            hCount = save.gethCount();
+            vCount = save.getvCount();
+            mCallback.onScoreChange();
+            mCells = save.getCells();
+            mShapes = new Shape[save.getShapes().length];
+            for (int i = 0; i < mShapes.length; i++) {
+                mShapes[i] = Utils.fromShape(save.getShapes()[i]);
+            }
+            ScoreManager.get().reset(save.getcCount(), save.getScore(), save.getMultiple());
+        } else {
+            hCount = Integer.parseInt(PreferenceManager
+                    .getDefaultSharedPreferences(mContext)
+                    .getString(mContext.getString(R.string.ground_horizontal_count), "10"));
+            vCount = Integer.parseInt(PreferenceManager
+                    .getDefaultSharedPreferences(mContext)
+                    .getString(mContext.getString(R.string.ground_vertical_count), "20"));
+            mCells = new Cell[vCount][hCount];
+            for (int y = 0; y < vCount; y++) {
+                for (int x = 0; x < hCount; x++) {
+                    mCells[y][x] = new Cell();
+                }
+            }
+            int nCount = Integer.parseInt(PreferenceManager
+                    .getDefaultSharedPreferences(mContext)
+                    .getString(mContext.getString(R.string.next_shape_count), "2"));
+            mShapes = new Shape[nCount];
+            for (int i = 0; i < mShapes.length; i++) {
+                mShapes[i] = Utils.nextShape();
+            }
+            ScoreManager.get().reset(0, 0, 1);
+        }
+        space = PreferenceManager
+                .getDefaultSharedPreferences(mContext)
+                .getFloat(mContext.getString(R.string.ground_shape_space), Config.DEFAULT_GROUND_SHAPE_SPACE);
+        mCallback.onNextShape(mShapes[1]);
+    }
 
-    @Override
     public void onLeft() {
         if (isReady && !isRunning) {
             isRunning = true;
-            mSoundService.onMove();
-            mVibrateService.onMove();
-            mShapes[0].preMove(true, -1);
+            SoundManager.get().onMove();
+            mShapes[0].preMove(-1, 0);
             for (Point point : mShapes[0].prePoints) {
-                if (point.x < 0 || point.y >= 0 && mCells[point.x][point.y].had) {
+                if (point.x < 0 || point.y >= 0 && mCells[point.y][point.x].had) {
                     mShapes[0].preBack();
                     isRunning = false;
                     return;
                 }
             }
-            mShapes[0].move(true, -1);
+            mShapes[0].move(-1, 0);
             mView.postInvalidate();
             isRunning = false;
         }
     }
 
-    @Override
     public void onRight() {
         if (isReady && !isRunning) {
             isRunning = true;
-            mSoundService.onMove();
-            mVibrateService.onMove();
-            mShapes[0].preMove(true, 1);
+            SoundManager.get().onMove();
+            mShapes[0].preMove(1, 0);
             for (Point point : mShapes[0].prePoints) {
-                if (point.x >= hCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
+                if (point.x >= hCount || point.y >= 0 && mCells[point.y][point.x].had) {
                     mShapes[0].preBack();
                     isRunning = false;
                     return;
                 }
             }
-            mShapes[0].move(true, 1);
+            mShapes[0].move(1, 0);
             mView.postInvalidate();
             isRunning = false;
         }
     }
 
-    @Override
     public void onUp() {
         // onRotate();
     }
 
-    @Override
     public void onDown() {
+        // TODO: 2017/10/28
         if (isReady && !isRunning) {
             // isRunning = true;
-            mSoundService.onMove();
-            mVibrateService.onMove();
+            SoundManager.get().onMove();
             tryMoveDown();
             // isRunning = false;
         }
     }
 
-    @Override
     public void onDrop() {
         if (isReady && !isRunning) {
             isRunning = true;
-            mSoundService.onDrop();
-            mVibrateService.onDrop();
+            SoundManager.get().onDrop();
             boolean flag = false;
-            int diff = 0;
-            for (int i = 1; i <= vCount + 1; i++) { // I 旋转后可下落距离大于 vCount
-                mShapes[0].preMove(false, i);
+            int dy = 0;
+            for (int y = 1; y <= vCount + 1; y++) { // I 旋转后可下落距离大于 vCount
+                mShapes[0].preMove(0, y);
                 for (Point point : mShapes[0].prePoints) {
-                    if (point.y >= vCount || point.y >= 0 && mCells[point.x][point.y].had) {
+                    if (point.y >= vCount || point.y >= 0 && mCells[point.y][point.x].had) {
                         flag = true;
-                        diff = i - 1;
+                        dy = y - 1;
                         break;
                     }
                 }
                 if (flag) {
                     cancelInterval();
-                    mScoreService.onDrop();
-                    mCallback.onScoreChange(mScoreService);
-                    mShapes[0].move(false, diff);
+                    ScoreManager.get().onDrop();
+                    mCallback.onScoreChange();
+                    mShapes[0].move(0, dy);
                     onLand();
                     return;
                 }
@@ -152,15 +170,13 @@ abstract class Control implements ControlImpl {
         }
     }
 
-    @Override
     public void onRotate() {
         if (isReady && !isRunning) {
             isRunning = true;
-            mSoundService.onRotate();
-            mVibrateService.onRotate();
+            SoundManager.get().onRotate();
             mShapes[0].preRotate();
             for (Point point : mShapes[0].prePoints) {
-                if (point.x < 0 || point.x >= hCount || point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
+                if (point.x < 0 || point.x >= hCount || point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.y][point.x].had) {
                     mShapes[0].preBack();
                     isRunning = false;
                     return;
@@ -172,13 +188,36 @@ abstract class Control implements ControlImpl {
         }
     }
 
-    @Override
+    abstract void onLand();
+
+    void onOver() {
+        isReady = false;
+        isRunning = false;
+        SoundManager.get().onOver();
+        mCallback.onOver();
+    }
+
+    public void onSave() {
+        if (isOver) {
+            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, "");
+        } else {
+            Save save = new Save();
+            save.sethCount(hCount);
+            save.setvCount(vCount);
+            save.setcCount(ScoreManager.get().getLineCount());
+            save.setScore(ScoreManager.get().getScore());
+            save.setMultiple(ScoreManager.get().getMultiple());
+            save.setCells(mCells);
+            save.setShapes(mShapes);
+            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, JsonUtil.toJson(save));
+        }
+    }
+
     public void onPause() {
         isReady = false;
         cancelInterval();
     }
 
-    @Override
     public void onStart() {
         isReady = true;
         Observable.interval(Config.SPEED, Config.SPEED, TimeUnit.MILLISECONDS)
@@ -197,83 +236,24 @@ abstract class Control implements ControlImpl {
         }
     }
 
-    @Override
-    public void onOver() {
-        isReady = false;
-        isRunning = false;
-        mSoundService.onOver();
-        mVibrateService.onOver();
-        mCallback.onOver(mScoreService.getLineCount(), mScoreService.getScore());
-    }
-
-    @Override
-    public void onMute(boolean state) {
-        mSoundService.setEnable(!state);
-    }
-
-    @Override
-    public void onSavedInstanceState() {
-        if (isOver) {
-            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, "");
-        } else {
-            Save save = new Save();
-            save.setcCount(mScoreService.getLineCount());
-            save.setScore(mScoreService.getScore());
-            save.setMultiple(mScoreService.getMultiple());
-            save.setCells(mCells);
-            save.setShapes(mShapes);
-            SPUtil.saveString(BundleKey.SAVE, BundleKey.SAVE, JsonUtil.toJson(save));
-        }
-    }
-
-    @Override
-    public void dispose() {
-        mSoundService.dispose();
-        mVibrateService.dispose();
-        mTimerDisposable.dispose();
-        // TODO: 2017/10/18
-    }
-
-    private void initState(boolean isContinue) {
-        Save save = JsonUtil.toObj(SPUtil.getString(BundleKey.SAVE, BundleKey.SAVE), Save.class);
-        if (isContinue && save != null) {
-            mScoreService.onRestore(save.getcCount(), save.getScore(), save.getMultiple());
-            mCallback.onScoreChange(mScoreService);
-            mCells = save.getCells();
-            mShapes = new Shape[save.getShapes().length];
-            for (int i = 0; i < mShapes.length; i++) {
-                mShapes[i] = Shape.fromShape(save.getShapes()[i]);
-            }
-        } else {
-            mCells = new Cell[hCount][vCount];
-            for (int i = 0; i < hCount; i++) {
-                for (int j = 0; j < vCount; j++) {
-                    mCells[i][j] = new Cell();
-                }
-            }
-            mShapes = new Shape[2];
-            for (int i = 0; i < mShapes.length; i++) {
-                mShapes[i] = Utils.nextShape();
-            }
-        }
-        mCallback.onNextShape(mShapes[1]);
-        mView.postInvalidate();
+    public void onDispose() {
+        // TODO: 2017/10/28
     }
 
     private void tryMoveDown() {
         if (isReady && !isRunning) {
             isRunning = true;
-            mShapes[0].preMove(false, 1);
+            mShapes[0].preMove(0, 1);
             int state = 0; // 正常状态
             for (Point point : mShapes[0].prePoints) {
-                if (point.y >= vCount || point.x >= 0 && point.y >= 0 && mCells[point.x][point.y].had) {
+                if (point.y >= vCount || point.y >= 0 && mCells[point.y][point.x].had) {
                     cancelInterval();
                     state = 1; // 触底
                     break;
                 }
             }
             if (state == 0) {
-                mShapes[0].move(false, 1);
+                mShapes[0].move(0, 1);
                 mView.postInvalidate();
                 isRunning = false;
             } else {

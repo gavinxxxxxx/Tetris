@@ -1,7 +1,6 @@
 package me.gavin.game.tetris.core;
 
-
-import me.gavin.game.tetris.core.shape.Shape;
+import me.gavin.game.tetris.shape.Shape;
 
 /**
  * 存档数据
@@ -10,12 +9,30 @@ import me.gavin.game.tetris.core.shape.Shape;
  */
 public class Save {
 
+    private int hCount;
+    private int vCount;
     private int cCount;
     private long score;
     private int multiple;
 
     private Cell[][] cells;
     private Shape[] shapes;
+
+    public int gethCount() {
+        return hCount;
+    }
+
+    public void sethCount(int hCount) {
+        this.hCount = hCount;
+    }
+
+    public int getvCount() {
+        return vCount;
+    }
+
+    public void setvCount(int vCount) {
+        this.vCount = vCount;
+    }
 
     public int getcCount() {
         return cCount;

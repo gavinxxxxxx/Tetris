@@ -1,7 +1,6 @@
 package me.gavin.game.tetris.core;
 
-import me.gavin.game.tetris.core.shape.Shape;
-import me.gavin.game.tetris.effect.impl.ScoreService;
+import me.gavin.game.tetris.shape.Shape;
 
 /**
  * TetrisCallback
@@ -16,8 +15,8 @@ public interface TetrisCallback {
 
     void onClear(int clearCount);
 
-    void onScoreChange(ScoreService service);
+    void onScoreChange();
 
-    void onOver(int clearedLineCount, long score);
+    void onOver();
 
 }

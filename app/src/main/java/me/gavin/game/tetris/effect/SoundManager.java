@@ -6,14 +6,17 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 
 import me.gavin.game.tetris.R;
-import me.gavin.game.tetris.effect.impl.SoundService;
+import me.gavin.game.tetris.app.App;
 
 /**
  * 音效
  *
  * @author gavin.xiong 2017/10/18
  */
-public class SoundManager implements SoundService {
+public class SoundManager {
+
+    private SoundPool mSoundPool;
+    private boolean enable = true;
 
     private final int[] sounds = {
             R.raw.effect_clear,
@@ -24,11 +27,7 @@ public class SoundManager implements SoundService {
             R.raw.over
     };
 
-    private final SoundPool mSoundPool;
-
-    private boolean enable = true;
-
-    public SoundManager(Context context) {
+    private SoundManager(Context context) {
         mSoundPool = new SoundPool.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
                         .setLegacyStreamType(AudioManager.STREAM_MUSIC)
@@ -40,9 +39,12 @@ public class SoundManager implements SoundService {
         }
     }
 
-    @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
+    public static SoundManager get() {
+        return Holder.INSTANCE;
+    }
+
+    public void setEnable(boolean state) {
+        enable = state;
         if (!enable && mSoundPool != null) {
             for (int i = 0; i < sounds.length; i++) {
                 mSoundPool.stop(i);
@@ -50,32 +52,26 @@ public class SoundManager implements SoundService {
         }
     }
 
-    @Override
     public void onStart() {
         playSound(5, 8);
     }
 
-    @Override
     public void onMove() {
         playSound(4, 0);
     }
 
-    @Override
     public void onRotate() {
         playSound(3, 1);
     }
 
-    @Override
     public void onDrop() {
         playSound(2, 2);
     }
 
-    @Override
     public void onClear() {
         playSound(1, 5);
     }
 
-    @Override
     public void onOver() {
         playSound(6, 10);
     }
@@ -86,15 +82,13 @@ public class SoundManager implements SoundService {
         }
     }
 
-    @Override
     public void dispose() {
         if (mSoundPool != null) {
             mSoundPool.release();
         }
     }
 
-    @Override
-    public boolean isDisposed() {
-        return mSoundPool == null;
+    private static class Holder {
+        private static final SoundManager INSTANCE = new SoundManager(App.get());
     }
 }

@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import me.gavin.game.tetris.core.shape.Shape;
+import me.gavin.game.tetris.shape.Shape;
 import me.gavin.game.tetris.util.DisplayUtil;
 
 /**

@@ -8,6 +8,22 @@ package me.gavin.game.tetris.core;
 class Cell {
 
     boolean had;
-    Integer color;
 
+    @Override
+    public String toString() {
+        return String.valueOf(had);
+    }
+
+//    static String toString(Cell[][] cell) {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("---- start -----\n");
+//        for (Cell[] cells : cell) {
+//            for (Cell cell1 : cells) {
+//                sb.append(cell1).append(" ");
+//            }
+//            sb.append("\n");
+//        }
+//        sb.append("---- end -----");
+//        return sb.toString();
+//    }
 }

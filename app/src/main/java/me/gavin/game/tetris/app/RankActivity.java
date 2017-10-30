@@ -18,15 +18,9 @@ import io.reactivex.Observable;
 import me.gavin.game.tetris.BundleKey;
 import me.gavin.game.tetris.Config;
 import me.gavin.game.tetris.databinding.ItemRankBinding;
-import me.gavin.game.tetris.effect.Rank;
 import me.gavin.game.tetris.util.JsonUtil;
 import me.gavin.game.tetris.util.SPUtil;
 
-/**
- * 排行榜
- *
- * @author gavin.xiong 2017/10/24
- */
 public class RankActivity extends ListActivity {
 
     private List<Rank> rankList;
@@ -98,4 +92,5 @@ public class RankActivity extends ListActivity {
             this.binding = binding;
         }
     }
+
 }

@@ -2,43 +2,63 @@
     <string name="app_name">Tetris</string>
     <!--<string name="app_name">Polyomino</string>-->
 
-    <string-array name="shape_mode">
-        <item>四格骨牌</item>
-        <item>四格骨牌 &amp; 五格骨牌简版</item>
-        <item>四格骨牌 &amp; + - .</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; + - .</item>
-        <item>自定义</item>
+    <string name="settings_summary_on">启用</string>
+    <string name="settings_summary_off">禁用</string>
+
+    <string name="effect_sound">effect_sound</string>
+    <string name="effect_background_music">effect_background_music</string>
+    <string name="effect_vibrate">effect_vibrate</string>
+
+    <string name="ground_horizontal_count">ground_horizontal_count</string>
+    <string name="ground_vertical_count">ground_vertical_count</string>
+    <string name="ground_shape_space">ground_shape_space</string>
+
+    <string name="next_shape_count">next_shape_count</string>
+
+    <string name="mode_shape_type">mode_shape_type</string>
+
+    <string-array name="ground_horizontal_count">
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
     </string-array>
-    <string-array name="shape_mode_value">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+
+    <string-array name="ground_vertical_count">
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
     </string-array>
 
     <string-array name="shape_type">
         <item>四格骨牌</item>
-        <item>四格骨牌 &amp; 五格骨牌简版</item>
-        <item>四格骨牌 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>四格骨牌 &amp; 五格骨牌简版 &amp; +-.</item>
-        <item>自定义</item>
+        <item>五格骨牌</item>
     </string-array>
+
+    <string-array name="shape_type_value">
+        <item>4.0</item>
+        <item>5.0</item>
+        <!--<item>I4,J4,L4,O4,S4,T4,Z4</item>-->
+        <!--<item>S5,T5,U5,V5,X5,Z5</item>-->
+    </string-array>
+
 </resources>

@@ -29,6 +29,6 @@
 #----------------------------------------------------------------------------
 -keep class me.gavin.game.tetris.core.Cell { *; }
 -keep class me.gavin.game.tetris.core.Save { *; }
--keep class me.gavin.game.tetris.core.shape.** { *; }
--keep class me.gavin.game.tetris.effect.Rank { *; }
+-keep class me.gavin.game.tetris.shape.Shape { *; }
+-keep class me.gavin.game.tetris.app.Rank { *; }
 #----------------------------------------------------------------------------

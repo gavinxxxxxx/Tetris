@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.effect;
+package me.gavin.game.tetris.app;
 
 /**
  * 纪录
