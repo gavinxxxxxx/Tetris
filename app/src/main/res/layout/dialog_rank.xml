@@ -7,20 +7,16 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLength="12"
-            android:text="骚年，你已经成功引起了我的注意" />
-
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
             android:layout_marginTop="8dp"
-            android:hint="Tetris"
-            android:inputType="text" />
+            android:hint="骚年，留下您的大名"
+            android:inputType="text"
+            android:maxLength="12"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

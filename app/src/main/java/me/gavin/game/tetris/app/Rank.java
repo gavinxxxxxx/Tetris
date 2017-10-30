@@ -9,38 +9,38 @@ public class Rank {
 
     private String title;
     private long score;
-    private int lineCount;
+    private int count;
     private long time;
 
-    public String getTitle() {
+    String getTitle() {
         return this.title;
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
-    public long getScore() {
+    long getScore() {
         return this.score;
     }
 
-    public void setScore(long score) {
+    void setScore(long score) {
         this.score = score;
     }
 
-    public int getLineCount() {
-        return this.lineCount;
+    int getCount() {
+        return this.count;
     }
 
-    public void setLineCount(int lineCount) {
-        this.lineCount = lineCount;
+    void setCount(int count) {
+        this.count = count;
     }
 
-    public long getTime() {
+    long getTime() {
         return this.time;
     }
 
-    public void setTime(long time) {
+    void setTime(long time) {
         this.time = time;
     }
 }

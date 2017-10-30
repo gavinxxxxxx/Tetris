@@ -7,7 +7,7 @@ package me.gavin.game.tetris.effect;
  */
 public class ScoreManager {
 
-    private int lineCount = 0;
+    private int count = 0;
     private long score = 0;
     private int multiple = 1;
 
@@ -27,7 +27,7 @@ public class ScoreManager {
     }
 
     public void onEliminate(int eliminatedCount) {
-        lineCount += eliminatedCount;
+        count += eliminatedCount;
         for (int i = 1; i <= eliminatedCount; i++) {
             multiple *= i;
             score += multiple;
@@ -42,8 +42,8 @@ public class ScoreManager {
         }
     }
 
-    public int getLineCount() {
-        return lineCount;
+    public int getCount() {
+        return count;
     }
 
     public long getScore() {
@@ -55,7 +55,7 @@ public class ScoreManager {
     }
 
     public void reset(int count, long score, int multiple) {
-        this.lineCount = count;
+        this.count = count;
         this.score = score;
         this.multiple = multiple;
     }

@@ -204,7 +204,7 @@ public abstract class Control {
             Save save = new Save();
             save.sethCount(hCount);
             save.setvCount(vCount);
-            save.setcCount(ScoreManager.get().getLineCount());
+            save.setcCount(ScoreManager.get().getCount());
             save.setScore(ScoreManager.get().getScore());
             save.setMultiple(ScoreManager.get().getMultiple());
             save.setCells(mCells);

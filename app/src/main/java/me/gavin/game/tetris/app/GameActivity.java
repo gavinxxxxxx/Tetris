@@ -136,7 +136,7 @@ public class GameActivity extends Activity implements TetrisCallback {
                 .toList()
                 .map(List::size)
                 .subscribe(integer -> {
-                    boolean enter = integer < Config.RANK_COUNT && ScoreManager.get().getLineCount() > 0;
+                    boolean enter = integer < Config.RANK_COUNT && ScoreManager.get().getCount() > 0;
                     DialogRankBinding rankBinding = DialogRankBinding.inflate(getLayoutInflater());
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(enter ? String.format("TOP %s", integer + 1) : "GAME OVER");
@@ -159,7 +159,7 @@ public class GameActivity extends Activity implements TetrisCallback {
                 .filter(Boolean::booleanValue)
                 .map(arg0 -> {
                     Rank rank = new Rank();
-                    rank.setLineCount(ScoreManager.get().getLineCount());
+                    rank.setCount(ScoreManager.get().getCount());
                     rank.setScore(ScoreManager.get().getScore());
                     rank.setTime(System.currentTimeMillis());
                     rank.setTitle(name);
