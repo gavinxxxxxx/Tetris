@@ -31,7 +31,7 @@ public class LandControl extends Control {
         shapePoint.addAll(Arrays.asList(mShapes[0].points));
         mShapes[0] = null;
 
-        mClearLines.clear();
+        mEliminableLines.clear();
         Set<Integer> set = new HashSet<>();
 
         for (Point point : shapePoint) {
@@ -49,13 +49,13 @@ public class LandControl extends Control {
                 }
             }
             if (eliminable) {
-                mClearLines.add(y);
+                mEliminableLines.add(y);
             }
         }
 
-        if (mClearLines.size() > 0) {
-            Collections.sort(mClearLines);
-            for (Integer y : mClearLines) {
+        if (mEliminableLines.size() > 0) {
+            Collections.sort(mEliminableLines);
+            for (Integer y : mEliminableLines) {
                 for (int i = 0, count = shapePoint.size(); i < count; i++) {
                     if (y == shapePoint.get(i).y) {
                         shapePoint.remove(i);
@@ -66,19 +66,19 @@ public class LandControl extends Control {
                     }
                 }
             }
-            doClear();
-            ScoreManager.get().onClear(mClearLines.size());
-            mCallback.onClear(mClearLines.size());
+            doEliminate();
+            ScoreManager.get().onEliminate(mEliminableLines.size());
+            mCallback.onEliminate(mEliminableLines.size());
             mCallback.onScoreChange();
         } else {
             tryNext();
         }
     }
 
-    private void doClear() {
+    private void doEliminate() {
         Observable.interval(100, 100, TimeUnit.MILLISECONDS)
                 .map(aLong -> { // 消除前闪烁
-                    for (Integer y : mClearLines) {
+                    for (Integer y : mEliminableLines) {
                         for (int x = 0; x < hCount; x++) {
                             mCells[y][x].had = !mCells[y][x].had;
                         }
@@ -88,7 +88,7 @@ public class LandControl extends Control {
                 })
                 .take(6)
                 .toList()
-                .map(arg0 -> mClearLines)
+                .map(arg0 -> mEliminableLines)
                 .flatMapObservable(Observable::fromIterable)
                 .doOnComplete(this::tryNext)
                 .subscribe(y -> {
@@ -98,13 +98,13 @@ public class LandControl extends Control {
                     for (int x = 0; x < hCount; x++) {
                         mCells[0][x] = new Cell();
                     }
-                    for (int i = 0; i < mClearLines.size(); i++) {
-                        if (mClearLines.get(i) <= y) {
-                            mClearLines.set(i, mClearLines.get(i) + 1);
+                    for (int i = 0; i < mEliminableLines.size(); i++) {
+                        if (mEliminableLines.get(i) <= y) {
+                            mEliminableLines.set(i, mEliminableLines.get(i) + 1);
                         }
                     }
-                    SoundManager.get().onClear();
-                    mCallback.onClear();
+                    SoundManager.get().onEliminate();
+                    mCallback.onEliminate();
                 });
     }
 
@@ -125,7 +125,7 @@ public class LandControl extends Control {
     private void toNext() {
         System.arraycopy(mShapes, 1, mShapes, 0, mShapes.length - 1);
         mShapes[mShapes.length - 1] = Utils.nextShape();
-        ScoreManager.get().onNextShape(mClearLines.size());
+        ScoreManager.get().onNextShape(mEliminableLines.size());
         mCallback.onNextShape(mShapes[1]);
         isRunning = false;
         onStart();

@@ -26,16 +26,16 @@ public class ScoreManager {
         // score += 1;
     }
 
-    public void onClear(int clearCount) {
-        lineCount += clearCount;
-        for (int i = 1; i <= clearCount; i++) {
+    public void onEliminate(int eliminatedCount) {
+        lineCount += eliminatedCount;
+        for (int i = 1; i <= eliminatedCount; i++) {
             multiple *= i;
             score += multiple;
         }
     }
 
-    public void onNextShape(int clearCount) {
-        if (clearCount == 0) {
+    public void onNextShape(int eliminatedCount) {
+        if (eliminatedCount == 0) {
             multiple = 1; // 触底未消除，重置倍数
         } else {
             multiple *= 2;

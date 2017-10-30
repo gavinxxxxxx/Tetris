@@ -104,11 +104,11 @@ public class GameActivity extends Activity implements TetrisCallback {
     }
 
     @Override
-    public void onClear() {
+    public void onEliminate() {
     }
 
     @Override
-    public void onClear(int clearCount) {
+    public void onEliminate(int eliminatedCount) {
     }
 
     @Override

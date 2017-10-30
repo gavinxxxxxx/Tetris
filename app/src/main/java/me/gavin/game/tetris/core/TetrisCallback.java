@@ -11,9 +11,9 @@ public interface TetrisCallback {
 
     void onNextShape(Shape shape);
 
-    void onClear();
+    void onEliminate();
 
-    void onClear(int clearCount);
+    void onEliminate(int eliminatedCount);
 
     void onScoreChange();
 

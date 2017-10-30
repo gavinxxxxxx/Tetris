@@ -39,7 +39,7 @@ public abstract class Control {
 
     TetrisCallback mCallback;
 
-    List<Integer> mClearLines = new ArrayList<>();
+    List<Integer> mEliminableLines = new ArrayList<>();
 
     private boolean isReady;
     boolean isRunning;

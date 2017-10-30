@@ -19,7 +19,7 @@ public class SoundManager {
     private boolean enable = true;
 
     private final int[] sounds = {
-            R.raw.effect_clear,
+            R.raw.effect_eliminate,
             R.raw.effect_drop,
             R.raw.effect_rotate,
             R.raw.effect_move,
@@ -68,7 +68,7 @@ public class SoundManager {
         playSound(2, 2);
     }
 
-    public void onClear() {
+    public void onEliminate() {
         playSound(1, 5);
     }
 
