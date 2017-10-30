@@ -1,5 +1,7 @@
 package me.gavin.game.tetris.effect;
 
+import me.gavin.game.tetris.Config;
+
 /**
  * ScoreManager
  *
@@ -52,6 +54,10 @@ public class ScoreManager {
 
     public int getMultiple() {
         return multiple;
+    }
+
+    public int getSpeed() {
+        return Math.max(100, (int) (Config.SPEED * Math.pow(0.9, count / 100)));
     }
 
     public void reset(int count, long score, int multiple) {

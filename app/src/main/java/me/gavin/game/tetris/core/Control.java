@@ -220,7 +220,7 @@ public abstract class Control {
 
     public void onStart() {
         isReady = true;
-        Observable.interval(Config.SPEED, Config.SPEED, TimeUnit.MILLISECONDS)
+        Observable.interval(0, ScoreManager.get().getSpeed(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {

@@ -14,11 +14,11 @@ public class X5 extends Shape {
         this.type = TYPE_5_X;
         this.pointCount = 5;
         this.points = new Point[pointCount];
-        points[0] = new Point(6, -1);
-        points[1] = new Point(5, -1);
-        points[2] = new Point(4, -1);
-        points[3] = new Point(5, -2);
-        points[4] = new Point(5, 0);
+        points[0] = new Point(6, -2);
+        points[1] = new Point(5, -2);
+        points[2] = new Point(4, -2);
+        points[3] = new Point(5, -3);
+        points[4] = new Point(5, -1);
     }
 
     @Override

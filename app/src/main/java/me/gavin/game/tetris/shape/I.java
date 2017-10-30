@@ -15,15 +15,15 @@ public class I extends Shape {
         this.pointCount = 4;
         this.points = new Point[pointCount];
         if (morphological == 0) {
-            points[0] = new Point(5, -3);
-            points[1] = new Point(5, -2);
-            points[2] = new Point(5, -1);
-            points[3] = new Point(5, 0);
+            points[0] = new Point(5, -4);
+            points[1] = new Point(5, -3);
+            points[2] = new Point(5, -2);
+            points[3] = new Point(5, -1);
         } else if (morphological == 1) {
-            points[0] = new Point(3, 0);
-            points[1] = new Point(4, 0);
-            points[2] = new Point(5, 0);
-            points[3] = new Point(6, 0);
+            points[0] = new Point(3, -1);
+            points[1] = new Point(4, -1);
+            points[2] = new Point(5, -1);
+            points[3] = new Point(6, -1);
         }
     }
 
@@ -32,22 +32,16 @@ public class I extends Shape {
             if (!isPre) {
                 morphological++;
             }
-            points[0].x -= 2;
-            points[0].y += 2;
-            points[1].x -= 1;
-            points[1].y += 1;
-            points[3].x += 1;
-            points[3].y -= 1;
+            points[0].offset(-2, 2);
+            points[1].offset(-1, 1);
+            points[3].offset(1, -1);
         } else if (morphological == 1) {
             if (!isPre) {
                 morphological--;
             }
-            points[0].x += 2;
-            points[0].y -= 2;
-            points[1].x += 1;
-            points[1].y -= 1;
-            points[3].x -= 1;
-            points[3].y += 1;
+            points[0].offset(2, -2);
+            points[1].offset(1, -1);
+            points[3].offset(-1, 1);
         }
     }
 
