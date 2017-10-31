@@ -2,6 +2,7 @@ package me.gavin.game.tetris.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -43,16 +44,23 @@ public class GameActivity extends Activity implements TetrisCallback {
         gameStart();
     }
 
-    private void init() {
-        boolean isContinue = getIntent().getBooleanExtra(BundleKey.CONTINUE, false);
-        mControl = new LandControl(mBinding.tetris, this, isContinue);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.act_game);
+        init();
+    }
 
-        mBinding.ivRotate.setOnClickListener(v -> {
-            mControl.onRotate();
-        });
-        mBinding.ivDrop.setOnClickListener(v -> {
-            mControl.onDrop();
-        });
+    private void init() {
+        if (mControl == null) {
+            boolean isContinue = getIntent().getBooleanExtra(BundleKey.CONTINUE, false);
+            mControl = new LandControl(mBinding.tetris, this, isContinue);
+        } else {
+            mControl.setTetrisView(mBinding.tetris);
+        }
+
+        mBinding.ivRotate.setOnClickListener(v -> mControl.onRotate());
+        mBinding.ivDrop.setOnClickListener(v -> mControl.onDrop());
         mBinding.rocker.setDirectionListener(event -> {
             switch (event) {
                 case RockerView.EVENT_DIRECTION_LEFT:

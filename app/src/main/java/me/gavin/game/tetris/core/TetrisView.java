@@ -1,6 +1,7 @@
 package me.gavin.game.tetris.core;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -43,8 +44,10 @@ public class TetrisView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int defaultSize = Math.min(DisplayUtil.getScreenWidth(), DisplayUtil.getScreenHeight() / 2);
-        setMeasuredDimension(defaultSize / 2, defaultSize);
+        int defSize = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                ? Math.min(DisplayUtil.getScreenWidth() / 2, DisplayUtil.getScreenHeight() - DisplayUtil.dp2px(48))
+                : Math.min(DisplayUtil.getScreenWidth(), DisplayUtil.getScreenHeight() / 2);
+        setMeasuredDimension(defSize / 2, defSize);
     }
 
     @Override

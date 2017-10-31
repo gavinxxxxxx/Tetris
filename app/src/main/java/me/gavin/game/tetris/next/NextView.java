@@ -71,9 +71,9 @@ public class NextView extends View {
         for (Point point : mShape.points) {
             canvas.drawRect(
                     cellWidth * (point.x - 3) + space,
-                    cellWidth * (point.y + 3) + space,
+                    cellWidth * (point.y + 4) + space,
                     cellWidth * (point.x - 3) + cellWidth - space,
-                    cellWidth * (point.y + 3) + cellWidth - space,
+                    cellWidth * (point.y + 4) + cellWidth - space,
                     mHadPaint);
         }
     }

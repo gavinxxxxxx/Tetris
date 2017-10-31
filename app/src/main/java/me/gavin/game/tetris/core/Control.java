@@ -53,6 +53,13 @@ public abstract class Control {
         view.setControl(this);
     }
 
+    public void setTetrisView(TetrisView view) {
+        this.mView = view;
+        view.setControl(this);
+        mCallback.onNextShape(mShapes[1]);
+        mCallback.onScoreChange();
+    }
+
     private void init(boolean isContinue) {
         Save save = JsonUtil.toObj(SPUtil.getString(BundleKey.SAVE, BundleKey.SAVE), Save.class);
         if (isContinue && save != null) {

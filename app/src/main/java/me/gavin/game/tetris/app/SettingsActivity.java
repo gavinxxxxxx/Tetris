@@ -53,6 +53,7 @@ public class SettingsActivity extends Activity {
 //            });
             MultiSelectListPreference shapeMode = (MultiSelectListPreference) findPreference(getString(R.string.mode_shape_type));
             shapeMode.setOnPreferenceChangeListener((preference, newValue) -> {
+                @SuppressWarnings("unchecked")
                 Set<String> set = (Set<String>) newValue;
                 if (set == null || set.isEmpty()) {
                     return false;
