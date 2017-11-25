@@ -218,7 +218,7 @@ public class RockerView extends View {
     }
 
     /**
-     * 获取摇杆偏移角度 0-360°
+     * 获取偏移角度 0-360°
      */
     private int getAngleConvert(float radian) {
         int tmp = (int) Math.round(radian / Math.PI * 180);

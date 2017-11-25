@@ -5,6 +5,10 @@
     <string name="settings_summary_on">启用</string>
     <string name="settings_summary_off">禁用</string>
 
+    <string name="style_color_bg">style_color_bg</string>
+    <string name="style_color_cell">style_color_cell</string>
+    <string name="style_color_shape">style_color_shape</string>
+
     <string name="effect_sound">effect_sound</string>
     <string name="effect_background_music">effect_background_music</string>
     <string name="effect_vibrate">effect_vibrate</string>

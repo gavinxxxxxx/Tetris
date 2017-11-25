@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="样式">
+
+        <EditTextPreference
+            android:defaultValue="#235689"
+            android:hint="#26A69A  |  #80000000"
+            android:key="@string/style_color_bg"
+            android:summary="#235689"
+            android:title="背景颜色" />
+
+        <EditTextPreference
+            android:defaultValue="#235689"
+            android:hint="#26A69A  |  #80000000"
+            android:key="@string/style_color_cell"
+            android:summary="#235689"
+            android:title="方格颜色" />
+
+        <EditTextPreference
+            android:defaultValue="#235689"
+            android:hint="#26A69A  |  #80000000"
+            android:key="@string/style_color_shape"
+            android:summary="#235689"
+            android:title="图形颜色" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="效果">
 
         <SwitchPreference
@@ -14,21 +39,21 @@
 
     <!--<PreferenceCategory android:title="场地">-->
 
-        <!--<ListPreference-->
-            <!--android:defaultValue="10"-->
-            <!--android:entries="@array/ground_horizontal_count"-->
-            <!--android:entryValues="@array/ground_horizontal_count"-->
-            <!--android:key="@string/ground_horizontal_count"-->
-            <!--android:summary="10"-->
-            <!--android:title="横向" />-->
+    <!--<ListPreference-->
+    <!--android:defaultValue="10"-->
+    <!--android:entries="@array/ground_horizontal_count"-->
+    <!--android:entryValues="@array/ground_horizontal_count"-->
+    <!--android:key="@string/ground_horizontal_count"-->
+    <!--android:summary="10"-->
+    <!--android:title="横向" />-->
 
-        <!--<ListPreference-->
-            <!--android:defaultValue="20"-->
-            <!--android:entries="@array/ground_vertical_count"-->
-            <!--android:entryValues="@array/ground_vertical_count"-->
-            <!--android:key="@string/ground_vertical_count"-->
-            <!--android:summary="20"-->
-            <!--android:title="纵向" />-->
+    <!--<ListPreference-->
+    <!--android:defaultValue="20"-->
+    <!--android:entries="@array/ground_vertical_count"-->
+    <!--android:entryValues="@array/ground_vertical_count"-->
+    <!--android:key="@string/ground_vertical_count"-->
+    <!--android:summary="20"-->
+    <!--android:title="纵向" />-->
 
     <!--</PreferenceCategory>-->
 
