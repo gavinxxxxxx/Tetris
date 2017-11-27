@@ -50,6 +50,8 @@ public class MainActivity extends Activity {
                 .getDefaultSharedPreferences(this)
                 .getStringSet(getString(R.string.mode_shape_type), null);
         Utils.resetLimit(set);
+
+        mBinding.ivTest.setOnClickListener(v -> startActivity(new Intent(this, TestActivity.class)));
     }
 
     @Override

@@ -69,10 +69,21 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            android:layout_margin="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
             android:padding="8dp"
             android:src="@drawable/ic_settings"
+            tools:ignore="contentDescription" />
+
+        <ImageView
+            android:id="@+id/ivTest"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="64dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_launcher"
             tools:ignore="contentDescription" />
 
     </FrameLayout>
