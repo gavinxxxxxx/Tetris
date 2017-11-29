@@ -31,22 +31,22 @@ public class HSLColorPicker extends View {
             0xFFFF0000,
     };
 
-    private final static int TOUCH_FLAG_H = 1;
-    private final static int TOUCH_FLAG_S = 2;
-    private final static int TOUCH_FLAG_L = 3;
-    private final static int TOUCH_FLAG_A = 4;
+    private final static int TOUCH_FLAG_H = 0;
+    private final static int TOUCH_FLAG_S = 1;
+    private final static int TOUCH_FLAG_L = 2;
+    private final static int TOUCH_FLAG_A = 3;
 
     private final float[] mHSL = {0f, 1f, 0.5f, 1f}, mHSL2 = {0f, 1f, 0.5f, 1f}, mHSLTemp = new float[mHSL.length];
 
     private float mHStoreWidth = DisplayUtil.dp2px(8), mLineWidth = DisplayUtil.dp2px(3);
     private float mCx, mCy, mOr, mIr;
-    private int mLineHMargin, mLineVMargin = DisplayUtil.dp2px(32);
+    private int mLineHMargin, mLineVMargin = DisplayUtil.dp2px(42);
 
     private final Paint mHPaint, mSPaint, mLPaint, mAPaint, mCoverPaint, mPaint, mTextPaint;
 
     private boolean mWithAlpha = true;
 
-    private int mTouchFlag;
+    private int mTouchFlag = -1;
 
     public HSLColorPicker(Context context) {
         this(context, null);
@@ -72,7 +72,6 @@ public class HSLColorPicker extends View {
         mPaint.setColor(ColorUtils.HSLToColor(mHSL));
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setColor(0xFFFFFFFF);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setTypeface(Typeface.MONOSPACE);
     }
@@ -103,25 +102,17 @@ public class HSLColorPicker extends View {
         mLPaint.setStrokeWidth(mLineWidth);
         mAPaint.setStrokeWidth(mLineWidth);
 
-        resetLinePaint();
+        resetLinePaint(null, -1);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         // H 渐变色圆环
         canvas.drawCircle(mCx, mCy, mOr / 2f + mIr / 2f, mHPaint);
-        //  圆形填充
-        mPaint.setColor(ColorUtils.HSLToColor(mHSL) & ((Math.round(0xFF * mHSL[3]) << 24) + 0xFFFFFF));
+
+        // 圆形填充
+        mPaint.setColor(HSLToColor(mHSL));
         canvas.drawCircle(mCx, mCy, mIr + 0.5f, mPaint);
-        // 文字居中
-        mTextPaint.setTextSize(70f);
-        int baseY = (int) (mCy - mTextPaint.descent() / 2 - mTextPaint.ascent() / 2);
-        canvas.drawText(String.format("#%08X", mPaint.getColor()), mCx, baseY, mTextPaint);
-        mTextPaint.setTextSize(30f);
-        canvas.drawText(String.format(Locale.getDefault(), "%3d° %3d%% %3d%% %3d%%",
-                Math.round(mHSL[0]), Math.round(mHSL[1] * 100),
-                Math.round(mHSL[2] * 100), Math.round(mHSL[3] * 100)
-        ), mCx, baseY + 60, mTextPaint);
 
         // 圆环选择状态
         mHSL2[0] = mHSL[0];
@@ -131,6 +122,19 @@ public class HSLColorPicker extends View {
         float y = (float) (mCy - (mOr + mIr) / 2 * Math.sin(radian));
         canvas.drawCircle(x, y, mHStoreWidth * 2f, mCoverPaint);
         canvas.drawCircle(x, y, mHStoreWidth, mPaint);
+
+        // 文字
+        mTextPaint.setTextSize(70f);
+        int baseY = (int) (mCy - mTextPaint.descent() / 2 - mTextPaint.ascent() / 2);
+        String textHex = String.format(mWithAlpha ? "#%08X" : "#%06X",
+                mWithAlpha ? HSLToColor(mHSL) : ColorUtils.HSLToColor(mHSL));
+        canvas.drawText(textHex, mCx, baseY, mTextPaint);
+        mTextPaint.setTextSize(30f);
+        String textHSL = String.format(Locale.getDefault(),
+                mWithAlpha ? "%3d° %3d%% %3d%% %3d%%" : "%3d° %3d%% %3d%%",
+                Math.round(mHSL[0]), Math.round(mHSL[1] * 100), Math.round(mHSL[2] * 100),
+                mWithAlpha ? Math.round(mHSL[3] * 100) : null);
+        canvas.drawText(textHSL, mCx, baseY + 60, mTextPaint);
 
         // 线性调节器
         float a = mCy + mOr;
@@ -154,88 +158,60 @@ public class HSLColorPicker extends View {
                 double distance = Math.sqrt(Math.pow(mCx - event.getX(), 2) + Math.pow(mCy - event.getY(), 2));
                 if (Math.abs(distance - (mOr + mIr) / 2f) < mHStoreWidth * 3) {
                     mTouchFlag = TOUCH_FLAG_H;
-                    mHSL[0] = getAngle(event.getX() - mCx, event.getY() - mCy);
-                    resetLinePaint();
-                    invalidate();
-                    return true;
                 } else if (Math.abs(mCy + mOr + mLineVMargin - event.getY()) < mLineWidth * 3) {
                     mTouchFlag = TOUCH_FLAG_S;
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[1] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
-                    return true;
                 } else if (Math.abs(mCy + mOr + mLineVMargin * 2 - event.getY()) < mLineWidth * 3) {
                     mTouchFlag = TOUCH_FLAG_L;
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[2] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
-                    return true;
                 } else if (mWithAlpha && Math.abs(mCy + mOr + mLineVMargin * 3 - event.getY()) < mLineWidth * 3) {
                     mTouchFlag = TOUCH_FLAG_A;
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[3] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
+                }
+                if (mTouchFlag >= 0) {
+                    resetLinePaint(event, mTouchFlag);
                     return true;
                 }
                 return false;
             case MotionEvent.ACTION_MOVE:
-                if (mTouchFlag == TOUCH_FLAG_H) {
-                    mHSL[0] = getAngle(event.getX() - mCx, event.getY() - mCy);
-                    resetLinePaint();
-                    invalidate();
-                } else if (mTouchFlag == TOUCH_FLAG_S) {
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[1] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
-                } else if (mTouchFlag == TOUCH_FLAG_L) {
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[2] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
-                } else if (mWithAlpha && mTouchFlag == TOUCH_FLAG_A) {
-                    float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
-                    mHSL[3] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-                    resetLinePaint();
-                    invalidate();
-                }
+                resetLinePaint(event, mTouchFlag);
                 return true;
             default:
-                mTouchFlag = 0;
+                mTouchFlag = -1;
                 return false;
         }
     }
 
-    private void resetLinePaint() {
-        System.arraycopy(mHSL, 0, mHSLTemp, 0, mHSL.length);
-        mHSLTemp[1] = 0f;
-        int startColor = ColorUtils.HSLToColor(mHSLTemp);
-        mHSLTemp[1] = .5f;
-        int cColor = ColorUtils.HSLToColor(mHSLTemp);
-        mHSLTemp[1] = 1f;
-        int endColor = ColorUtils.HSLToColor(mHSLTemp);
-        mSPaint.setShader(new LinearGradient(mLineHMargin, 0, getMeasuredWidth() - mLineHMargin, 0,
-                new int[]{startColor, cColor, endColor}, null, Shader.TileMode.CLAMP));
-
-        System.arraycopy(mHSL, 0, mHSLTemp, 0, mHSL.length);
-        mHSLTemp[2] = 0f;
-        startColor = ColorUtils.HSLToColor(mHSLTemp);
-        mHSLTemp[2] = .5f;
-        cColor = ColorUtils.HSLToColor(mHSLTemp);
-        mHSLTemp[2] = 1f;
-        endColor = ColorUtils.HSLToColor(mHSLTemp);
-        mLPaint.setShader(new LinearGradient(mLineHMargin, 0, getMeasuredWidth() - mLineHMargin, 0,
-                new int[]{startColor, cColor, endColor}, null, Shader.TileMode.CLAMP));
-
+    private void resetLinePaint(MotionEvent event, int index) {
+        if (event != null && index == 0) {
+            mHSL[0] = getAngle(event.getX() - mCx, event.getY() - mCy);
+        } else if (event != null && index > 0) {
+            float progress = (event.getX() - mLineHMargin) / (getMeasuredWidth() - mLineHMargin * 2);
+            mHSL[index] = progress < 0 ? 0 : progress > 1 ? 1 : progress;
+        }
+        resetSLPaint(mSPaint, 1);
+        resetSLPaint(mLPaint, 2);
         if (mWithAlpha) {
             System.arraycopy(mHSL, 0, mHSLTemp, 0, mHSL.length);
             int color = ColorUtils.HSLToColor(mHSLTemp);
             mAPaint.setShader(new LinearGradient(mLineHMargin, 0, getMeasuredWidth() - mLineHMargin, 0,
                     color & 0x00FFFFFF, color | 0xFF000000, Shader.TileMode.CLAMP));
         }
+        mTextPaint.setColor(ColorUtils.calculateLuminance(HSLToColor(mHSL)) > 0.5 ? 0xFF000000 : 0xFFFFFFFF);
+        invalidate();
+    }
+
+    private void resetSLPaint(Paint paint, int index) {
+        System.arraycopy(mHSL, 0, mHSLTemp, 0, mHSL.length);
+        mHSLTemp[index] = 0f;
+        int startColor = HSLToColor(mHSLTemp);
+        mHSLTemp[index] = .5f;
+        int cColor = HSLToColor(mHSLTemp);
+        mHSLTemp[index] = 1f;
+        int endColor = HSLToColor(mHSLTemp);
+        paint.setShader(new LinearGradient(mLineHMargin, 0, getMeasuredWidth() - mLineHMargin, 0,
+                new int[]{startColor, cColor, endColor}, null, Shader.TileMode.CLAMP));
+    }
+
+    private int HSLToColor(float[] hsl) {
+        return ColorUtils.HSLToColor(hsl) & ((Math.round(0xFF * hsl[3]) << 24) + 0xFFFFFF);
     }
 
     /**
