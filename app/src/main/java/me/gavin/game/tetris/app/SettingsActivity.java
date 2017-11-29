@@ -18,6 +18,7 @@ import java.util.Set;
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.effect.SoundManager;
 import me.gavin.game.tetris.next.Utils;
+import me.gavin.widget.color.picker.ColorInputFilter;
 
 public class SettingsActivity extends Activity {
 

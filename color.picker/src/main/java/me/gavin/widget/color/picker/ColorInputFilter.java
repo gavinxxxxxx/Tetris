@@ -1,4 +1,4 @@
-package me.gavin.game.tetris.app;
+package me.gavin.widget.color.picker;
 
 import android.text.InputFilter;
 import android.text.Spanned;

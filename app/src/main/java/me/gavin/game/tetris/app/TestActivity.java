@@ -7,7 +7,8 @@ import android.support.annotation.Nullable;
 
 import me.gavin.game.tetris.R;
 import me.gavin.game.tetris.databinding.TestBinding;
-import me.gavin.widget.color.picker.ColorPickerDialog;
+import me.gavin.game.tetris.util.L;
+import me.gavin.widget.color.picker.ColorPickerDialogBuilder;
 
 public class TestActivity extends Activity {
 
@@ -18,11 +19,16 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.test);
 
-        new ColorPickerDialog.Builder(this)
+        ColorPickerDialogBuilder.with(this)
                 .setTitle("选择颜色")
-                .setPositiveButton("确定", null)
+                .setColor(getResources().getColor(R.color.colorPrimary))
+                .setPositiveButton("确定", (dialog, color) -> {
+                    L.e(color);
+                })
                 .setNegativeButton("取消", null)
-
+                .setInputButton("输入", (dialog, color) -> {
+                    L.e(color);
+                })
                 .show();
     }
 }
